@@ -1,0 +1,11 @@
+<Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/Svg">
+<Path d="M4 21V14" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+<Path d="M4 10V3" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+<Path d="M12 21V12" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+<Path d="M12 8V3" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+<Path d="M20 21V16" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+<Path d="M20 12V3" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+<Path d="M1 14H7" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+<Path d="M9 8H15" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+<Path d="M17 16H23" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+</Svg>

@@ -1,0 +1,7 @@
+export default {
+    SET_LOADING: 'SET_LOADING',
+    SET_COUNTRY: 'SET_COUNTRY',
+    SET_CITY: 'SET_CITY',
+    SET_USER: 'SET_USER',
+    DELETE_USER: 'DELETE_USER'
+}
