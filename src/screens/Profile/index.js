@@ -17,6 +17,7 @@ export default Profile = (props) => {
         dispatch(deleteUser({
             token: null,
             email: user.email,
+            name: user.name,
             city: {
                 id: user.city.id,
                 name: user.city.name,
@@ -50,31 +51,31 @@ export default Profile = (props) => {
                     </TouchableOpacity>
                 </View>
                 <TouchableOpacity style={common.headerTitle}>
-                    <Text style={common.headerTitleText} numberOfLines={1}>{user.token}</Text>
+                    <Text style={common.headerTitleText} numberOfLines={1}>{user.name}</Text>
                 </TouchableOpacity>
                 <View style={common.headerRight} />
             </Header>
             <Content contentContainerStyle={{ padding: 20 }}>
-                <TouchableOpacity key='1' style={styles.item} onPress={() => props.navigation.push('DeliveryList')}>
+                {/* <TouchableOpacity key='1' style={styles.item} onPress={() => props.navigation.push('DeliveryList')}>
                     <Text style={styles.itemText} numberOfLines={1}>{i18n.translate('Delivery addresses list')}</Text>
                     <Icon type='material' name='keyboard-arrow-right' size={25} color='#666666' />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity key='2' style={styles.item} onPress={() => goProfileEdit()}>
                     <Text style={styles.itemText} numberOfLines={1}>{i18n.translate('Edit profile information')}</Text>
                     <Icon type='material' name='keyboard-arrow-right' size={25} color='#666666' />
                 </TouchableOpacity>
-                <TouchableOpacity key='3' style={styles.item} onPress={() => props.navigation.push('PasswordChange')}>
+                <TouchableOpacity key='3' style={styles.item} onPress={() => props.navigation.push('ProfilePassword')}>
                     <Text style={styles.itemText} numberOfLines={1}>{i18n.translate('Change password')}</Text>
                     <Icon type='material' name='keyboard-arrow-right' size={25} color='#666666' />
                 </TouchableOpacity>
-                <TouchableOpacity key='4' style={styles.item} onPress={() => props.navigation.push('CouponCodes')}>
+                {/* <TouchableOpacity key='4' style={styles.item} onPress={() => props.navigation.push('CouponCodes')}>
                     <Text style={styles.itemText} numberOfLines={1}>{i18n.translate('Coupon codes')}</Text>
                     <Icon type='material' name='keyboard-arrow-right' size={25} color='#666666' />
                 </TouchableOpacity>
                 <TouchableOpacity key='5' style={styles.item}>
                     <Text style={styles.itemText} numberOfLines={1}>{i18n.translate('My orders')}</Text>
                     <Icon type='material' name='keyboard-arrow-right' size={25} color='#666666' />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity key='6' style={styles.item} onPress={() => props.navigation.push('ReviewList')}>
                     <Text style={styles.itemText} numberOfLines={1}>{i18n.translate('Restaurant reviews')}</Text>
                     <Icon type='material' name='keyboard-arrow-right' size={25} color='#666666' />
@@ -83,9 +84,9 @@ export default Profile = (props) => {
                     <Text style={styles.itemText} numberOfLines={1}>{i18n.translate('Delete profile')}</Text>
                     <Icon type='material' name='keyboard-arrow-right' size={25} color='#666666' />
                 </TouchableOpacity>
-                <TouchableOpacity key='8' style={styles.signout} onPress={() => onLogout()}>
+                {/* <TouchableOpacity key='8' style={styles.signout} onPress={() => onLogout()}>
                     <Text style={styles.itemText} numberOfLines={1}>{i18n.translate('Sign out')}</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </Content>
         </Container>
     );

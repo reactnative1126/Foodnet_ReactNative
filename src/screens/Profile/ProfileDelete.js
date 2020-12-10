@@ -28,6 +28,7 @@ export default ProfileDelete = (props) => {
                     dispatch(deleteUser({
                         token: null,
                         email: '',
+                        name: '',
                         city: {
                             id: 0,
                             name: '',

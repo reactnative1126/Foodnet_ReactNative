@@ -43,6 +43,7 @@ export default SignIn = (props) => {
                         dispatch(setUser({
                             token: response.result[0].token,
                             email,
+                            name: response.result[0].name,
                             city: {
                                 id: userCity.id,
                                 name: userCity.name,
@@ -54,6 +55,7 @@ export default SignIn = (props) => {
                         dispatch(setUser({
                             token: response.result[0].token,
                             email,
+                            name: response.result[0].name,
                             city: {
                                 id: userCity.id,
                                 name: userCity.name,
@@ -113,7 +115,7 @@ export default SignIn = (props) => {
                     />
                     <Text style={common.errorText}>{errorEmail}</Text>
                 </View>
-                <View style={[styles.inputView, common.marginTop50]}>
+                <View style={[styles.inputView, common.marginTop15]}>
                     <View style={styles.labelView}>
                         <Text style={[styles.labelText, !isEmpty(errorPassword) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Password')}</Text>
                         <TouchableOpacity onPress={() => props.navigation.navigate('Forgot')}>
@@ -143,7 +145,7 @@ export default SignIn = (props) => {
                     />
                     <Text style={common.errorText}>{errorPassword}</Text>
                 </View>
-                <View style={[styles.buttonView, common.marginTop50]}>
+                <View style={[styles.buttonView, common.marginTop15]}>
                     <TouchableOpacity
                         disabled={isEmpty(email) || isEmpty(password) || errorEmail || errorPassword ? true : false}
                         style={[common.button, (isEmpty(email) || isEmpty(password) || errorEmail || errorPassword) ? common.backColorGrey : common.backColorYellow]}

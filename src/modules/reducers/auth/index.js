@@ -12,6 +12,7 @@ const initialState = {
     user: {
         token: null,
         email: '',
+        name: '',
         city: {
             id: 0,
             name: '',

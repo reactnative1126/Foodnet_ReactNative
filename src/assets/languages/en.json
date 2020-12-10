@@ -171,5 +171,7 @@
     "Package name": "Package name",
     "Select": "Select",
     "Back to the login": "Back to the login",
-    "No Menu": "No Menu"
+    "No Menu": "No Menu",
+
+    "The text must be less more than 300 characters": "The text must be less more than 300 characters"
 }

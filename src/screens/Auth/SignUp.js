@@ -12,6 +12,7 @@ import { BackIcon, ErrorIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
 import { TextField } from 'react-native-material-textfield';
+import { color } from 'react-native-reanimated';
 
 export default SignUp = (props) => {
     const dispatch = useDispatch();
@@ -51,6 +52,7 @@ export default SignUp = (props) => {
                     dispatch(setUser({
                         token: response.result[0].token,
                         email,
+                        name: response.result[0].name,
                         city: {
                             id: 0,
                             name: '',
@@ -108,7 +110,7 @@ export default SignUp = (props) => {
                     />
                     <Text style={common.errorText}>{errorName}</Text>
                 </View>
-                <View style={[styles.inputView, common.marginTop50]}>
+                <View style={[styles.inputView, common.marginTop15]}>
                     <Text style={[styles.labelText, !isEmpty(errorEmail) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('E-mail')}</Text>
                     <TextField
                         keyboardType='email-address'
@@ -127,7 +129,7 @@ export default SignUp = (props) => {
                     />
                     <Text style={common.errorText}>{errorEmail}</Text>
                 </View>
-                <View style={[styles.inputView, common.marginTop50]}>
+                <View style={[styles.inputView, common.marginTop15]}>
                     <Text style={[styles.labelText, !isEmpty(errorPassword) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Password')}</Text>
                     <Text style={styles.characterText}>{i18n.translate('5+ characters')}</Text>
                     <TextField
@@ -153,7 +155,7 @@ export default SignUp = (props) => {
                     />
                     <Text style={common.errorText}>{errorPassword}</Text>
                 </View>
-                <View style={[styles.inputView, common.marginTop50]}>
+                <View style={[styles.inputView, common.marginTop15]}>
                     <Text style={[styles.labelText, !isEmpty(errorConfirm) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('New password again')}</Text>
                     <Text style={styles.characterText}>{i18n.translate('5+ characters')}</Text>
                     <TextField
@@ -184,7 +186,7 @@ export default SignUp = (props) => {
                         type='material-community'
                         name={termOfService ? 'check-box-outline' : 'checkbox-blank-outline'}
                         size={25}
-                        color={colors.GREY.PRIMARY}
+                        color={termOfService ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY}
                     />
                     <Text style={styles.rememberText}>{i18n.translate('I accept the ')}
                         <Text style={[styles.rememberText, common.fontColorYellow, common.underLine]} onPress={() => alert('OK')}>{i18n.translate('Terms and Conditions')}</Text>
@@ -195,7 +197,7 @@ export default SignUp = (props) => {
                         type='material-community'
                         name={newsLetter ? 'check-box-outline' : 'checkbox-blank-outline'}
                         size={25}
-                        color={colors.GREY.PRIMARY}
+                        color={newsLetter ? colors.YELLOW.PRIMARY :colors.GREY.PRIMARY}
                     />
                     <Text style={styles.rememberText}>{i18n.translate('I subscribe to the newsletter')}</Text>
                 </TouchableOpacity>

@@ -43,6 +43,7 @@ export default Languages = (props) => {
                     logged ? dispatch(setUser({
                         token: user.token,
                         email: user.email,
+                        name: user.name,
                         city: {
                             id: cityOne[0].id,
                             name: cityOne[0].cities,

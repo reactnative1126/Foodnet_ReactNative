@@ -7,13 +7,13 @@ import { common, colors } from '@constants/themes';
 import { InternetIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
-export default DeliveryError = (props) => {
+export default Errors = (props) => {
     return (
         <Container style={common.container}>
             <StatusBar />
             <Header style={common.header}>
                 <View style={common.headerLeft}>
-                    <TouchableOpacity onPress={() => props.navigation.goBack()}>
+                    <TouchableOpacity onPress={() => props.navigation.pop()}>
                         <Icon type='material' name='arrow-back' size={30} color={colors.YELLOW.PRIMARY} />
                     </TouchableOpacity>
                 </View>
@@ -26,7 +26,7 @@ export default DeliveryError = (props) => {
                 <InternetIcon />
                 <Text style={styles.mainText}>{i18n.translate('Operation failed')}</Text>
                 <Text style={styles.subText}>{i18n.translate('Server error, please try again')}</Text>
-                <TouchableOpacity style={styles.button} onPress={() => props.navigation.goBack()}>
+                <TouchableOpacity style={styles.button} onPress={() => props.navigation.pop()}>
                     <Text style={styles.buttonText}>{i18n.translate('Again')}</Text>
                 </TouchableOpacity>
                 <View style={common.height50} />

@@ -45,6 +45,7 @@ export default SignIn = (props) => {
                         dispatch(setUser({
                             token: response.result[0].token,
                             email: props.route.params.email,
+                            name: user.name,
                             city: {
                                 id: userCity.id,
                                 name: userCity.name,
@@ -56,6 +57,7 @@ export default SignIn = (props) => {
                         dispatch(setUser({
                             token: response.result[0].token,
                             email: props.route.params.email,
+                            name: user.name,
                             city: {
                                 id: userCity.id,
                                 name: userCity.name,
@@ -93,7 +95,7 @@ export default SignIn = (props) => {
                         <View style={{ width: 30 }} />
                     </View>
                 )}
-                <View style={[styles.inputView, common.marginTop50]}>
+                <View style={styles.inputView}>
                     <Text style={[styles.labelText, !isEmpty(errorPassword) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Password')}</Text>
                     <Text style={styles.characterText}>{i18n.translate('5+ characters')}</Text>
                     <TextField
@@ -119,7 +121,7 @@ export default SignIn = (props) => {
                     />
                     <Text style={common.errorText}>{errorPassword}</Text>
                 </View>
-                <View style={[styles.inputView, common.marginTop50]}>
+                <View style={[styles.inputView, common.marginTop15]}>
                     <Text style={[styles.labelText, !isEmpty(errorConfirm) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('New password again')}</Text>
                     <Text style={styles.characterText}>{i18n.translate('5+ characters')}</Text>
                     <TextField

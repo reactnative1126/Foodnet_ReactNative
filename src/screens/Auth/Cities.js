@@ -50,6 +50,7 @@ export default Cities = (props) => {
         })) : dispatch(setUser({
             token: user.token,
             email: user.email,
+            name: user.name,
             city: {
                 id: cityObj.id,
                 name: cityObj.cities,

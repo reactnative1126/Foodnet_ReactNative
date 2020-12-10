@@ -13,7 +13,7 @@ import i18n from '@utils/i18n';
 
 import { TextField } from 'react-native-material-textfield';
 
-export default PasswordChange = (props) => {
+export default ProfilePassword = (props) => {
     const dispatch = useDispatch();
     const { user } = useSelector(state => state.auth);
 
@@ -39,27 +39,26 @@ export default PasswordChange = (props) => {
     }, [oldPassword, visitOldPassword, newPassword, visitNewPassword, confirmPassword, visitConfirmPassword]);
 
     const onChange = () => {
-        if (!isEmpty(oldPassword) && !isEmpty(newPassword) && !isEmpty(confirmPassword) && isEmpty(errorOldPassword) && isEmpty(errorNewPassword) && isEmpty(errorConfirmPassword)) {
-            dispatch(setLoading(true));
-            ProfileService.modifyProfilePassword(user.token, oldPassword, newPassword, confirmPassword)
-                .then((response) => {
-                    dispatch(setLoading(false));
-                    if (response.status == 200) {
-                        dispatch(setUser({
-                            token: response.result[0].token,
-                            email: user.email,
-                            city: user.city
-                        }));
-                        props.navigation.goBack();
-                    } else {
-                        setErrorMsg(i18n.translate(response.msg));
-                    }
-                })
-                .catch((error) => {
-                    dispatch(setLoading(false));
-                    setErrorMsg(error.message);
-                });
-        }
+        dispatch(setLoading(true));
+        ProfileService.modifyProfilePassword(user.token, oldPassword, newPassword, confirmPassword)
+            .then((response) => {
+                dispatch(setLoading(false));
+                if (response.status == 200) {
+                    dispatch(setUser({
+                        token: response.result[0].token,
+                        email: user.email,
+                        name: user.name,
+                        city: user.city
+                    }));
+                    props.navigation.push('Success', { type: 2 });
+                } else {
+                    setErrorMsg(i18n.translate(response.msg));
+                }
+            })
+            .catch((error) => {
+                dispatch(setLoading(false));
+                setErrorMsg(error.message);
+            });
     }
     return (
         <Container style={common.container}>
@@ -74,8 +73,10 @@ export default PasswordChange = (props) => {
                     <Text style={common.headerTitleText}>{i18n.translate('Change password')}</Text>
                 </View>
                 <View style={common.headerRight}>
-                    <TouchableOpacity onPress={() => onChange()}>
-                        <Text style={common.headerRightText}>{i18n.translate('Set')}</Text>
+                    <TouchableOpacity
+                        disabled={isEmpty(oldPassword) || isEmpty(newPassword) || isEmpty(confirmPassword) || errorOldPassword || errorNewPassword || errorConfirmPassword || errorMsg}
+                        onPress={() => onChange()}>
+                        <Text style={(isEmpty(oldPassword) || isEmpty(newPassword) || isEmpty(confirmPassword) || errorOldPassword || errorNewPassword || errorConfirmPassword || errorMsg) ? [common.headerRightText, common.fontColorGrey] : common.headerRightText}>{i18n.translate('Set')}</Text>
                     </TouchableOpacity>
                 </View>
             </Header>

@@ -36,27 +36,27 @@ export default ProfileEdit = (props) => {
     }, [name, visitName, email, visitEmail, mobile, visitMobile]);
 
     const onSave = () => {
-        if (!isEmpty(name) && !isEmpty(email) && !isEmpty(mobile) && isEmpty(errorName) && isEmpty(errorEmail) && isEmpty(errorMobile)) {
-            dispatch(setLoading(true));
-            ProfileService.modifyProfileInformation(user.token, name, email, mobile)
-                .then((response) => {
-                    dispatch(setLoading(false));
-                    if (response.status == 200) {
-                        dispatch(setUser({
-                            token: user.token,
-                            email,
-                            city: user.city
-                        }));
-                        props.navigation.goBack();
-                    } else {
-                        setErrorMsg(i18n.translate(response.msg));
-                    }
-                })
-                .catch((error) => {
-                    dispatch(setLoading(false));
-                    setErrorMsg(error.message);
-                });
-        }
+        dispatch(setLoading(true));
+        ProfileService.modifyProfileInformation(user.token, name, email, mobile)
+            .then((response) => {
+                dispatch(setLoading(false));
+                if (response.status == 200) {
+                    dispatch(setUser({
+                        token: user.token,
+                        email,
+                        name,
+                        city: user.city
+                    }));
+                    props.navigation.push('Success', { type: 2 });
+                } else {
+                    setErrorMsg(i18n.translate(response.msg));
+                }
+            })
+            .catch((error) => {
+                dispatch(setLoading(false));
+                props.navigation.push('Errors');
+                setErrorMsg(error.message);
+            });
     }
     return (
         <Container style={common.container}>
@@ -71,8 +71,10 @@ export default ProfileEdit = (props) => {
                     <Text style={common.headerTitleText}>{i18n.translate('Edit profile information')}</Text>
                 </View>
                 <View style={common.headerRight}>
-                    <TouchableOpacity onPress={() => onSave()}>
-                        <Text style={common.headerRightText}>{i18n.translate('Set')}</Text>
+                    <TouchableOpacity
+                        disabled={isEmpty(name) || isEmpty(email) || isEmpty(mobile) || errorName || errorEmail || errorMobile || errorMsg}
+                        onPress={() => onSave()}>
+                        <Text style={(isEmpty(name) || isEmpty(email) || isEmpty(mobile) || errorName || errorEmail || errorMobile || errorMsg) ? [common.headerRightText, common.fontColorGrey] : common.headerRightText}>{i18n.translate('Set')}</Text>
                     </TouchableOpacity>
                 </View>
             </Header>

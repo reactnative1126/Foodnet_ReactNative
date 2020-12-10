@@ -171,5 +171,7 @@
     "Package name": "Csomag név",
     "Select": "Kiválaszt",
     "Back to the login": "Vissza a bejelentkezéshez",
-    "No Menu": "Nincs menü"
+    "No Menu": "Nincs menü",
+
+    "The text must be less more than 300 characters": "A szövegnek kevesebbnek kell lennie, mint 300 karakter"
 }

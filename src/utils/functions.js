@@ -51,6 +51,12 @@ export const validateLength = (value, length) => {
     }
     return false;
 }
+export const validateBetween = (value, min, max) => {
+    if (value.length >= min && value.length <= max) {
+        return true;
+    }
+    return false;
+}
 
 export const isEmpty = (param) => {
     return param == undefined || param == null || (typeof param === 'string' && param == '') || (typeof param === 'object' && param.length == 0) || (typeof param === 'array' && param.length == 0);

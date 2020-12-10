@@ -171,5 +171,7 @@
     "Package name": "Numele pachetului",
     "Select": "Selectați",
     "Back to the login": "Înapoi la autentificare",
-    "No Menu": "Fără meniu"
+    "No Menu": "Fără meniu",
+
+    "The text must be less more than 300 characters": "Textul trebuie să aibă mai puțin de 300 de caractere"
 }

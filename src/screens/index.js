@@ -1,5 +1,7 @@
-import Internet from '@screens/Internet';
-import Languages from '@screens/Languages';
+import Internet from '@screens/Athena/Internet';
+import Languages from '@screens/Athena/Languages';
+import Success from '@screens/Athena/Success';
+import Errors from '@screens/Athena/Errors';
 
 import Start from '@screens/Auth';
 import SignIn from '@screens/Auth/SignIn';
@@ -11,22 +13,24 @@ import Cities from '@screens/Auth/Cities';
 import Home from '@screens/Home';
 import Detail from '@screens/Home/Detail';
 
+import DeliveryList from '@screens/Delivery/DeliveryList';
+import DeliveryAdd from '@screens/Delivery/DeliveryAdd';
+
 import Profile from '@screens/Profile';
-import DeliveryList from '@screens/Profile/DeliveryList';
-import DeliveryAdd from '@screens/Profile/DeliveryAdd';
-import DeliverySuccess from '@screens/Profile/DeliverySuccess';
-import DeliveryError from '@screens/Profile/DeliveryError';
 import ProfileEdit from '@screens/Profile/ProfileEdit';
 import ProfileDelete from '@screens/Profile/ProfileDelete';
-import PasswordChange from '@screens/Profile/PasswordChange';
-import ReviewList from '@screens/Profile/ReviewList';
-import ReviewAdd from '@screens/Profile/ReviewAdd';
-import ReviewDelete from '@screens/Profile/ReviewDelete';
+import ProfilePassword from '@screens/Profile/ProfilePassword';
+import ReviewList from '@screens/Review/ReviewList';
+import ReviewAdd from '@screens/Review/ReviewAdd';
+import ReviewDelete from '@screens/Review/ReviewDelete';
 import CouponCodes from '@screens/Profile/CouponCodes';
 
 export {
     Internet,
     Languages,
+    Success,
+    Errors,
+    
     Start,
     SignIn,
     SignUp,
@@ -40,11 +44,9 @@ export {
     Profile,
     DeliveryList,
     DeliveryAdd,
-    DeliverySuccess,
-    DeliveryError,
     ProfileEdit,
     ProfileDelete,
-    PasswordChange,
+    ProfilePassword,
     ReviewList,
     ReviewAdd,
     ReviewDelete,

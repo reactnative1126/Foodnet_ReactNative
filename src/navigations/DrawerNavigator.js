@@ -33,6 +33,7 @@ const DrawerContent = (props) => {
         dispatch(deleteUser({
             token: null,
             email: user.email,
+            name: user.name,
             city: {
                 id: user.city.id,
                 name: user.city.name,

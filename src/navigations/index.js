@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { NavigationContainer, StackActions } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import NetInfo from '@react-native-community/netinfo';
@@ -37,12 +37,13 @@ export default AppContainer = () => {
                 <StackApp.Navigator
                     initialRouteName={user.city.status ? 'Cities' : (logged || city.id !== 0) ? 'App' : 'Start'}
                     screenOptions={{ gestureEnabled: false, ...TransitionPresets.SlideFromRightIOS }}>
-                    <StackApp.Screen name='Internet' component={Internet} options={{ headerShown: false, animationEnabled: false }} />
                     <StackApp.Screen name='Start' component={Start} options={navOptionHandler} />
                     <StackApp.Screen name='Auth' component={AuthStack} options={navOptionHandler} />
+                    <StackApp.Screen name='App' component={DrawerNavigator} options={navOptionHandler} />
+
+                    <StackApp.Screen name='Internet' component={Internet} options={{ headerShown: false, animationEnabled: false }} />
                     <StackApp.Screen name='Cities' component={Cities} options={navOptionHandler} />
                     <StackApp.Screen name='Languages' component={Languages} options={navOptionHandler} />
-                    <StackApp.Screen name='App' component={DrawerNavigator} options={navOptionHandler} />
                 </StackApp.Navigator>
             </NavigationContainer>
             <Loading />

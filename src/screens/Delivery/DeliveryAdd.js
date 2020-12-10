@@ -45,7 +45,7 @@ export default DeliveryAdd = (props) => {
                     dispatch(setLoading(false));
                     if (response.status == 200) {
                         setCitys(response.locations);
-                        if(props.route.params.type === 2){
+                        if (props.route.params.type === 2) {
                             var selectedCity = response.locations.filter(checkCity);
                             setCityObj(selectedCity[0]);
                         }
@@ -65,29 +65,21 @@ export default DeliveryAdd = (props) => {
     useEffect(() => setErrorHouseNumber(''), [addressHouseNumber]);
 
     const onSave = () => {
-        console.log(cityObj);
-        if (cityObj.id > 0 && !isEmpty(addressStreet) && !isEmpty(addressHouseNumber)) {
-            dispatch(setLoading(true));
-            ProfileService.setDeliveryAddress(user.token, addressId, cityObj, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber)
-                .then((response) => {
-                    dispatch(setLoading(false));
-                    dispatch(setDeliveryStatus(!deliveryStatus));
-                    if (response.status == 201 || response.status == 200) {
-                        props.navigation.replace('DeliverySuccess', { type });
-                    } else {
-                        props.navigation.push('DeliveryError');
-                    }
-                })
-                .catch((error) => {
-                    dispatch(setLoading(false));
-                    props.navigation.push('DeliveryError');
-                });
-        } else {
-            if (cityObj.id == 0) setErrorCity('City is required');
-            if (isEmpty(addressCity)) setErrorCity('City is required');
-            if (isEmpty(addressStreet)) setErrorStreet('Street is required');
-            if (isEmpty(addressHouseNumber)) setErrorHouseNumber('House number is required');
-        }
+        dispatch(setLoading(true));
+        ProfileService.setDeliveryAddress(user.token, addressId, cityObj, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber)
+            .then((response) => {
+                dispatch(setLoading(false));
+                dispatch(setDeliveryStatus(!deliveryStatus));
+                if (response.status == 201 || response.status == 200) {
+                    props.navigation.push('Success', { type });
+                } else {
+                    props.navigation.push('Error');
+                }
+            })
+            .catch((error) => {
+                dispatch(setLoading(false));
+                props.navigation.push('Error');
+            });
     };
 
     return (
@@ -103,8 +95,10 @@ export default DeliveryAdd = (props) => {
                     <Text style={common.headerTitleText}>{type === 1 ? i18n.translate('Create delivery address') : i18n.translate('Edit delivery address')}</Text>
                 </View>
                 <View style={common.headerRight}>
-                    <TouchableOpacity onPress={() => onSave()}>
-                        <Text style={common.headerRightText}>{i18n.translate('Set')}</Text>
+                    <TouchableOpacity
+                        disabled={cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber)}
+                        onPress={() => onSave()}>
+                        <Text style={(cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber)) ? [common.headerRightText, common.fontColorGrey] : common.headerRightText}>{i18n.translate('Set')}</Text>
                     </TouchableOpacity>
                 </View>
             </Header>

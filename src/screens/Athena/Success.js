@@ -9,16 +9,16 @@ import { common, colors } from '@constants/themes';
 import { SuccessIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
-export default DeliverySuccess = (props) => {
+export default Success = (props) => {
     const dispatch = useDispatch();
     const [type] = useState(props.route.params.type);
-    
+
     return (
         <Container style={common.container}>
             <StatusBar />
             <Header style={common.header}>
                 <View style={common.headerLeft}>
-                    <TouchableOpacity onPress={() => props.navigation.goBack()}>
+                    <TouchableOpacity onPress={() => props.navigation.pop(2)}>
                         <Icon type='material' name='arrow-back' size={30} color={colors.YELLOW.PRIMARY} />
                     </TouchableOpacity>
                 </View>
@@ -30,7 +30,7 @@ export default DeliverySuccess = (props) => {
             <View style={styles.content}>
                 <SuccessIcon />
                 <Text style={styles.mainText}>{type == 1 ? i18n.translate('Successful data creation') : i18n.translate('Successful data modification')}</Text>
-                <TouchableOpacity style={styles.button} onPress={()=>props.navigation.goBack()}>
+                <TouchableOpacity style={styles.button} onPress={() => props.navigation.pop(2)}>
                     <Text style={styles.buttonText}>{i18n.translate('Operations')}</Text>
                 </TouchableOpacity>
                 <View style={common.height50} />

@@ -8,7 +8,7 @@ import { setLoading } from '@modules/reducers/auth/actions';
 import { setReviewStatus } from '@modules/reducers/profile/actions';
 import { ProfileService } from '@modules/services';
 import { Card } from '@components';
-import { isEmpty } from '@utils/functions';
+import { isEmpty, validateBetween } from '@utils/functions';
 import { common, colors } from '@constants/themes';
 import { StarYellowIcon, StarGreyIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
@@ -24,9 +24,15 @@ export default ReviewAdd = (props) => {
     const [review] = useState(props.route.params.review);
     const [reviewCode] = useState(props.route.params.reviewCode);
     const [ratingStar, setRatingStar] = useState(isEmpty(props.route.params.review.review_rating) ? 0 : props.route.params.review.review_rating);
+    const [visitReviewText, setVisitReviewText] = useState(false);
+    const [errorReviewText, setErrorReviewText] = useState('');
     const [reviewText, setReviewText] = useState(isEmpty(props.route.params.review.review_message) ? '' : props.route.params.review.review_message);
     const [accept, setAccept] = useState(false);
     const [agree, setAgree] = useState(false);
+
+    useEffect(() => {
+        (visitReviewText && isEmpty(reviewText)) || (visitReviewText && !validateBetween(reviewText, 1, 300)) ? setErrorReviewText('The text must be less more than 300 characters') : setErrorReviewText('');
+    }, [reviewText, visitReviewText]);
 
     const onSave = () => {
         dispatch(setLoading(true));
@@ -35,7 +41,7 @@ export default ReviewAdd = (props) => {
                 dispatch(setLoading(false));
                 if (response.status == 201 || response.status == 200) {
                     dispatch(setReviewStatus(!reviewStatus));
-                    props.navigation.goBack();
+                    props.navigation.push('Success', { type: 1 });
                 }
             })
             .catch((error) => {
@@ -89,7 +95,7 @@ export default ReviewAdd = (props) => {
                 </Card>
 
                 <Card key='review' style={styles.card}>
-                    <Text style={styles.starTitle}>{i18n.translate('Evaluation')}</Text>
+                    <Text style={[styles.starTitle, !isEmpty(errorReviewText) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Evaluation')}</Text>
                     <TextField
                         keyboardType='default'
                         returnKeyType='next'
@@ -100,10 +106,14 @@ export default ReviewAdd = (props) => {
                         multiline={true}
                         height={85}
                         disabled={type == 1 ? false : true}
-                        containerStyle={[styles.textContainer, common.borderColorGrey]}
+                        containerStyle={[styles.textContainer, !isEmpty(errorReviewText) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
-                        onChangeText={(value) => setReviewText(value)}
+                        onChangeText={(value) => {
+                            setReviewText(value);
+                            setVisitReviewText(true);
+                        }}
                     />
+                    <Text style={common.errorText}>{errorReviewText}</Text>
                 </Card>
 
                 {type === 1 && (
@@ -113,7 +123,7 @@ export default ReviewAdd = (props) => {
                                 type='material-community'
                                 name={accept ? 'check-box-outline' : 'checkbox-blank-outline'}
                                 size={25}
-                                color={colors.GREY.PRIMARY}
+                                color={accept ? colors.YELLOW.PRIMARY :colors.GREY.PRIMARY}
                             />
                             <Text style={styles.rememberText}>{i18n.translate('I accept the ')}
                                 <Text style={[styles.rememberText, common.fontColorYellow, common.underLine]} onPress={() => alert('OK')}>{i18n.translate('GTC')}</Text>
@@ -125,7 +135,7 @@ export default ReviewAdd = (props) => {
                                 type='material-community'
                                 name={agree ? 'check-box-outline' : 'checkbox-blank-outline'}
                                 size={25}
-                                color={colors.GREY.PRIMARY}
+                                color={agree ? colors.YELLOW.PRIMARY :colors.GREY.PRIMARY}
                             />
                             <Text style={styles.rememberText}>{i18n.translate('I agree that my review may appear on ')}
                                 <Text style={[styles.rememberText, common.fontColorYellow, common.underLine]} onPress={() => alert('OK')}>foodnet.ro</Text>
@@ -134,8 +144,8 @@ export default ReviewAdd = (props) => {
                         </TouchableOpacity>
                         <View style={[styles.buttonView, common.marginTop35]}>
                             <TouchableOpacity
-                                disabled={ratingStar === 0 || isEmpty(reviewText) ? true : false}
-                                style={[common.button, (ratingStar === 0 || isEmpty(reviewText)) || !accept || !agree ? common.backColorGrey : common.backColorYellow]}
+                                disabled={(ratingStar === 0 || isEmpty(reviewText) || !validateBetween(reviewText, 1, 300)) ? true : false}
+                                style={[common.button, (ratingStar === 0 || isEmpty(reviewText) || !validateBetween(reviewText, 1, 300)) || !accept || !agree ? common.backColorGrey : common.backColorYellow]}
                                 onPress={() => onSave()}
                             >
                                 <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Registration')}</Text>
