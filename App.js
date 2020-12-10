@@ -16,9 +16,7 @@ global.internet = true;
 export default App = () => {
   const [splash, setSplash] = useState(true);
 
-  setTimeout(() => {
-    setSplash(false);
-  }, 1000);
+  setTimeout(() => setSplash(false), 1000);
 
   return (
     <Provider store={store}>

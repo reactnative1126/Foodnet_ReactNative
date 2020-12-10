@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Header } from 'native-base';
 import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native';
@@ -45,6 +45,7 @@ export default ReviewList = (props) => {
     }, [reviewStatus]);
 
     const goReview = (type, reviewCode, reviewId) => {
+        dispatch(setLoading(true));
         ProfileService.getReview(user.token, reviewId)
             .then((response) => {
                 dispatch(setLoading(false));

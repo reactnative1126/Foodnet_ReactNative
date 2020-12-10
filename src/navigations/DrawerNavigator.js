@@ -12,7 +12,7 @@ import { Icon } from 'react-native-elements';
 import { deleteUser } from '@modules/reducers/auth/actions';
 import { isEmpty, navOptionHandler } from '@utils/functions';
 import { common, colors } from '@constants/themes';
-import { InboxIcon, OrderIcon, ProfileIcon, CouponIcon, LocationIcon, LanguageIcon, ServiceIcon, GoBackIcon } from '@constants/svgs';
+import { InboxIcon, OrderIcon, ProfileIcon, LocationIcon, LanguageIcon, ServiceIcon, GoBackIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
 const Drawer = createDrawerNavigator();
@@ -73,10 +73,6 @@ const DrawerContent = (props) => {
                             <ProfileIcon />
                             <Text style={styles.menuTitle}>{i18n.translate('Profile')}</Text>
                         </TouchableOpacity>
-                        {/* <TouchableOpacity style={styles.menuItem}>
-                            <CouponIcon />
-                            <Text style={styles.menuTitle}>{i18n.translate('Coupon codes')}</Text>
-                        </TouchableOpacity> */}
                         <TouchableOpacity style={styles.menuItem} onPress={() => props.navigation.navigate('Profile', { screen: 'DeliveryList' })}>
                             <LocationIcon />
                             <Text style={styles.menuTitle}>{i18n.translate('My addresses')}</Text>

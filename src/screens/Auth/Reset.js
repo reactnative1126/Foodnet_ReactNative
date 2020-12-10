@@ -65,7 +65,6 @@ export default SignIn = (props) => {
                         props.navigation.navigate('App');
                     }
                 } else {
-                    dispatch(setLoading(false));
                     setErrorMsg(response.msg);
                 }
             })

@@ -57,7 +57,7 @@ export default SignUp = (props) => {
                             status: true
                         }
                     }));
-                    props.navigation.navigate('Cities');
+                    props.navigation.replace('Cities');
                 } else {
                     setErrorMsg(i18n.translate(response.msg));
                 }

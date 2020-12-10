@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, Fragment } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Header, Content } from 'native-base';
 import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';

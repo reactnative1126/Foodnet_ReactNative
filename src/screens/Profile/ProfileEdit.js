@@ -29,7 +29,6 @@ export default ProfileEdit = (props) => {
     const [errorMsg, setErrorMsg] = useState('');
 
     useEffect(() => {
-        console.log(name, email, mobile);
         setErrorMsg('');
         (visitName && isEmpty(name)) || (visitName && !validateName(name)) ? setErrorName('The name must be at least 3 characters long') : setErrorName('');
         (visitEmail && isEmpty(email)) || (visitEmail && !validateEmail(email)) ? setErrorEmail(i18n.translate('Email is not valid')) : setErrorEmail('');

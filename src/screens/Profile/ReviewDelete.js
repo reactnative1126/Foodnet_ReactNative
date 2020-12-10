@@ -15,6 +15,7 @@ import { TextField } from 'react-native-material-textfield';
 export default ReviewDelete = (props) => {
     const dispatch = useDispatch();
     const { user } = useSelector(state => state.auth);
+    const { reviewStatus } = useSelector(state => state.profile);
 
     const [review] = useState(props.route.params.review);
     const [visible, setVisible] = useState(false);
@@ -22,13 +23,13 @@ export default ReviewDelete = (props) => {
 
     const onDelete = () => {
         dispatch(setLoading(true));
-        ProfileService.deleteReview(user.token, review.reviewId)
+        ProfileService.deleteReview(user.token, review.review_Id)
             .then((response) => {
                 dispatch(setLoading(false));
                 setVisible(false);
                 if (response.status == 200) {
                     dispatch(setReviewStatus(!reviewStatus));
-                    props.navigation.goBack();
+                    props.navigation.pop();
                 }
             })
             .catch((error) => {
@@ -42,7 +43,7 @@ export default ReviewDelete = (props) => {
             <StatusBar />
             <Header style={common.header}>
                 <View style={common.headerLeft}>
-                    <TouchableOpacity onPress={() => props.navigation.goBack()}>
+                    <TouchableOpacity onPress={() => props.navigation.pop()}>
                         <Icon type='material' name='arrow-back' size={30} color={colors.YELLOW.PRIMARY} />
                     </TouchableOpacity>
                 </View>

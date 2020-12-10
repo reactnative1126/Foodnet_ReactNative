@@ -21,7 +21,6 @@ export default DeliveryAdd = (props) => {
 
     const [type] = useState(props.route.params.type);
     const [addressId] = useState(props.route.params.type === 2 ? props.route.params.item.id : 0);
-    const [addressCity, setAddressCity] = useState(props.route.params.type === 2 ? props.route.params.item.city : user.city.name);
     const [errorCity, setErrorCity] = useState('');
     const [addressStreet, setAddressStreet] = useState(props.route.params.type === 2 ? props.route.params.item.street : '');
     const [errorStreet, setErrorStreet] = useState('');
@@ -32,7 +31,7 @@ export default DeliveryAdd = (props) => {
 
     const [active, setActive] = useState(false);
     const [citys, setCitys] = useState([]);
-    const [cityObj, setCityObj] = useState(props.route.params.type === 2 ? props.route.params.item.city : { id: user.city.id, cities: user.city.name });
+    const [cityObj, setCityObj] = useState({ id: user.city.id, cities: user.city.name });
     // const [cityObj, setCityObj] = useState({ id: 0, cities: i18n.translate('Choose a city') });
 
     useEffect(() => {
@@ -61,14 +60,15 @@ export default DeliveryAdd = (props) => {
         return () => console.log('Unmounted');
     }, []);
 
-    useEffect(() => setErrorCity(''), [active, addressCity, cityObj]);
+    useEffect(() => setErrorCity(''), [active, cityObj]);
     useEffect(() => setErrorStreet(''), [addressStreet]);
     useEffect(() => setErrorHouseNumber(''), [addressHouseNumber]);
 
     const onSave = () => {
-        if ((!isEmpty(addressCity) && cityObj.id > 0) && !isEmpty(addressStreet) && !isEmpty(addressHouseNumber)) {
+        console.log(cityObj);
+        if (cityObj.id > 0 && !isEmpty(addressStreet) && !isEmpty(addressHouseNumber)) {
             dispatch(setLoading(true));
-            ProfileService.setDeliveryAddress(user.token, addressId, addressCity, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber)
+            ProfileService.setDeliveryAddress(user.token, addressId, cityObj, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber)
                 .then((response) => {
                     dispatch(setLoading(false));
                     dispatch(setDeliveryStatus(!deliveryStatus));
@@ -126,7 +126,6 @@ export default DeliveryAdd = (props) => {
                         {!isEmpty(citys) && citys.map((cityOne, key) => (
                             <TouchableOpacity key={key} style={[styles.itemView, key == citys.length - 1 && styles.noborder]} onPress={() => {
                                 setActive(false);
-                                setAddressCity(cityOne.cities);
                                 setCityObj(cityOne);
                             }}>
                                 <Text style={styles.itemText} numberOfLines={1}>{cityOne.cities}</Text>

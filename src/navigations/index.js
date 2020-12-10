@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { NavigationContainer, StackActions } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
@@ -10,16 +10,13 @@ import { Loading } from '@components';
 import DrawerNavigator from '@navigations/DrawerNavigator';
 import AuthStack from '@navigations/StackNavigators/AuthStackNavigator';
 import { navOptionHandler } from '@utils/functions';
-import { setLoading } from '@modules/reducers/auth/actions';
 
 const StackApp = createStackNavigator();
 export default AppContainer = () => {
-    const dispatch = useDispatch();
-    const { logged, country, city, user, loading } = useSelector(state => state.auth);
+    const { logged, country, city, user } = useSelector(state => state.auth);
     i18n.setLocale(country);
 
     useEffect(() => {
-        // dispatch(setLoading(false));
         const handleEventListener = state => {
             if (!state.isConnected && navigator && global.internet) {
                 global.internet = false;
@@ -31,24 +28,24 @@ export default AppContainer = () => {
             }
         }
         const unsubscribe = NetInfo.addEventListener(state => handleEventListener(state));
-        return () => {
-            unsubscribe();
-        }
+        return () => unsubscribe();
     }, []);
 
     return (
-        <NavigationContainer ref={nav => navigator = nav}>
-            <StackApp.Navigator
-                initialRouteName={user.city.status ? 'Cities' : (logged || city.id !== 0) ? 'App' : 'Start'}
-                screenOptions={{ gestureEnabled: false, ...TransitionPresets.SlideFromRightIOS }}>
-                <StackApp.Screen name='Internet' component={Internet} options={{ headerShown: false, animationEnabled: false }} />
-                <StackApp.Screen name='Start' component={Start} options={navOptionHandler} />
-                <StackApp.Screen name='Auth' component={AuthStack} options={navOptionHandler} />
-                <StackApp.Screen name='Cities' component={Cities} options={navOptionHandler} />
-                <StackApp.Screen name='Languages' component={Languages} options={navOptionHandler} />
-                <StackApp.Screen name='App' component={DrawerNavigator} options={navOptionHandler} />
-            </StackApp.Navigator>
-            <Loading loading={loading} />
-        </NavigationContainer>
+        <Fragment>
+            <NavigationContainer ref={nav => navigator = nav}>
+                <StackApp.Navigator
+                    initialRouteName={user.city.status ? 'Cities' : (logged || city.id !== 0) ? 'App' : 'Start'}
+                    screenOptions={{ gestureEnabled: false, ...TransitionPresets.SlideFromRightIOS }}>
+                    <StackApp.Screen name='Internet' component={Internet} options={{ headerShown: false, animationEnabled: false }} />
+                    <StackApp.Screen name='Start' component={Start} options={navOptionHandler} />
+                    <StackApp.Screen name='Auth' component={AuthStack} options={navOptionHandler} />
+                    <StackApp.Screen name='Cities' component={Cities} options={navOptionHandler} />
+                    <StackApp.Screen name='Languages' component={Languages} options={navOptionHandler} />
+                    <StackApp.Screen name='App' component={DrawerNavigator} options={navOptionHandler} />
+                </StackApp.Navigator>
+            </NavigationContainer>
+            <Loading />
+        </Fragment>
     );
 }

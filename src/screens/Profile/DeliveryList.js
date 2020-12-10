@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Header } from 'native-base';
 import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native';
@@ -13,7 +13,7 @@ import i18n from '@utils/i18n';
 
 export default DeliveryList = (props) => {
     const dispatch = useDispatch();
-    const { user } = useSelector(state => state.auth);
+    const { country, user } = useSelector(state => state.auth);
     const { deliveryStatus } = useSelector(state => state.profile);
 
     const [visible, setVisible] = useState(false);
@@ -22,7 +22,7 @@ export default DeliveryList = (props) => {
 
     useEffect(() => {
         dispatch(setLoading(true));
-        ProfileService.getDeliveryList(user.token)
+        ProfileService.getDeliveryList(user.token, country)
             .then((response) => {
                 dispatch(setLoading(false));
                 if (response.status == 200) {
@@ -38,8 +38,9 @@ export default DeliveryList = (props) => {
     const onDelete = () => {
         setVisible(false);
         dispatch(setLoading(true));
-        ProfileService.deleteDeliveryItem(user.token, deleteId)
+        ProfileService.deleteDeliveryAddress(user.token, deleteId)
             .then(async (response) => {
+                dispatch(setLoading(false));
                 if (response.status == 200) {
                     dispatch(setDeliveryStatus(!deliveryStatus));
                 }

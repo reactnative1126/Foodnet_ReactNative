@@ -31,11 +31,11 @@ export default Languages = (props) => {
         return cityObj.id == user.city.id;
     };
     const onLanguage = () => {
-        // dispatch(setLoading(true));
+        dispatch(setLoading(true));
         setDisabled(true);
         AuthService.cities(languages[language].code)
             .then(async (response) => {
-                // dispatch(setLoading(false));
+                dispatch(setLoading(false));
                 if (response.status == 200) {
                     var cityOne = await response.locations.filter(logged ? checkUserCity : checkCity);
                     dispatch(setCountry(languages[language].code));
@@ -57,8 +57,8 @@ export default Languages = (props) => {
                 }
             })
             .catch((error) => {
+                dispatch(setLoading(false));
                 setDisabled(false);
-                // dispatch(setLoading(false));
             });
     }
 

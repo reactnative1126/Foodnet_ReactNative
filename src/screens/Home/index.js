@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Header } from 'native-base';
 import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
@@ -24,25 +24,20 @@ export default Home = (props) => {
     const [result, setResult] = useState([]);
     const [refresh, setRefresh] = useState(false);
     const [search, setSearch] = useState('');
-    // const [count, setCount] = useState(0);
 
     useEffect(() => {
         setCityStatus(false);
         setFilterStatus(false);
-        // setCount(0);
         dispatch(setLoading(true));
         FoodService.promotion(country, logged ? user.city.name : city.name)
             .then((response) => {
-                // setCount(count + 1);
-                // if (count > 2) {
-                //     dispatch(setLoading(false));
-                // }
                 setRefresh(false);
                 if (response.status == 200) {
                     setPromotion(response.result);
                 }
             })
             .catch((error) => {
+                dispatch(setLoading(false));
                 setRefresh(false);
             });
         FoodService.popular(country, logged ? user.city.name : city.name)
@@ -53,6 +48,7 @@ export default Home = (props) => {
                 }
             })
             .catch((error) => {
+                dispatch(setLoading(false));
                 setRefresh(false);
             });
         FoodService.all(country, logged ? user.city.name : city.name, search, filters)
@@ -70,19 +66,15 @@ export default Home = (props) => {
     }, [country, city, user, refresh, filters]);
 
     useEffect(() => {
-        dispatch(setLoading(true));
         FoodService.result(country, logged ? user.city.name : city.name, search, filters)
             .then((response) => {
-                setResultLoader(true);
                 setRefresh(false);
-                dispatch(setLoading(false));
                 if (response.status == 200) {
                     setResult(response.result);
                 }
             })
             .catch((error) => {
                 setRefresh(false);
-                dispatch(setLoading(false));
             });
     }, [search]);
 

@@ -1,16 +1,9 @@
 import axios, { setClientToken, removeClientToken } from '@utils/axios';
 
 const ProfileService = {
-    getDeliveryList: function (token) {
+    getDeliveryList: function (token, country) {
         setClientToken(token);
-        return axios.get(`/delivery-address`).then((response) => {
-            removeClientToken();
-            return response.data;
-        });
-    },
-    deleteDeliveryItem: function (token, id) {
-        setClientToken(token);
-        return axios.delete(`/delivery-address/${id}`).then((response) => {
+        return axios.get(`/delivery-address/${country}`).then((response) => {
             removeClientToken();
             return response.data;
         });
@@ -20,12 +13,20 @@ const ProfileService = {
         return axios.post(`/delivery-address`, {
             houseNumber,
             street,
-            city,
+            city: city.cities,
             floor,
             doorNumber,
             deliveryAddressId: id,
+            locationNameId: city.id,
             operation: id === 0 ? 'create' : 'update'
         }).then((response) => {
+            removeClientToken();
+            return response.data;
+        });
+    },
+    deleteDeliveryAddress: function (token, id) {
+        setClientToken(token);
+        return axios.delete(`/delivery-address/${id}`).then((response) => {
             removeClientToken();
             return response.data;
         });
@@ -55,7 +56,7 @@ const ProfileService = {
             return response.data;
         });
     },
-    modifyPassword: function (token, oldPassword, newPassword, newPasswordAgain) {
+    modifyProfilePassword: function (token, oldPassword, newPassword, newPasswordAgain) {
         setClientToken(token);
         return axios.post(`/profile/change-password`, {
             oldPassword,

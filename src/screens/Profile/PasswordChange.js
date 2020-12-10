@@ -41,12 +41,12 @@ export default PasswordChange = (props) => {
     const onChange = () => {
         if (!isEmpty(oldPassword) && !isEmpty(newPassword) && !isEmpty(confirmPassword) && isEmpty(errorOldPassword) && isEmpty(errorNewPassword) && isEmpty(errorConfirmPassword)) {
             dispatch(setLoading(true));
-            ProfileService.modifyPassword(user.token, oldPassword, newPassword, confirmPassword)
+            ProfileService.modifyProfilePassword(user.token, oldPassword, newPassword, confirmPassword)
                 .then((response) => {
                     dispatch(setLoading(false));
                     if (response.status == 200) {
                         dispatch(setUser({
-                            token: response.result.token,
+                            token: response.result[0].token,
                             email: user.email,
                             city: user.city
                         }));
