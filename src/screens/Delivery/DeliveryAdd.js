@@ -33,9 +33,12 @@ export default DeliveryAdd = (props) => {
 
     const [active, setActive] = useState(false);
     const [citys, setCitys] = useState([]);
-    const [cityObj, setCityObj] = useState(props.route.params.type === 2 ? { id: props.route.params.item.city_id, cities: props.route.params.item.city } : { id: user.city.id, cities: user.city.name });
+    const [cityObj, setCityObj] = useState({ id: user.city.id, cities: user.city.name });
 
     useEffect(() => {
+        const checkCity = (city) => {
+            return city.id === props.route.params.item.city_id;
+        }
         const getCities = () => {
             dispatch(setLoading(true));
             AuthService.cities(country)
@@ -43,6 +46,10 @@ export default DeliveryAdd = (props) => {
                     dispatch(setLoading(false));
                     if (response.status == 200) {
                         setCitys(response.locations);
+                        if(props.route.params.type === 2){
+                            var selectedCity = response.locations.filter(checkCity);
+                            setCityObj(selectedCity[0]);
+                        }
                     }
                 })
                 .catch((error) => {
