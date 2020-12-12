@@ -40,6 +40,11 @@ const AuthService = {
             return response.data;
         });
     },
+    cityNames: function (cityId) {
+        return axios.get(`/location/base/city-name/${cityId}`).then((response) => {
+            return response.data;
+        });
+    },
 }
 
 export default AuthService;

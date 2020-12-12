@@ -35,7 +35,8 @@ export default ProfileDelete = (props) => {
                             status: false
                         }
                     }));
-                    props.navigation.reset({ index: 1, routes: [{ name: 'Start' }] })
+                    props.navigation.reset({ index: 1, routes: [{ name: 'Start' }] });
+                    // props.navigation.popToTop();
                 }
             })
             .catch((error) => {

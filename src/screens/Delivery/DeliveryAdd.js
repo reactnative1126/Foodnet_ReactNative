@@ -7,7 +7,7 @@ import { Icon } from 'react-native-elements';
 import { setLoading } from '@modules/reducers/auth/actions';
 import { setDeliveryStatus } from '@modules/reducers/profile/actions';
 import { AuthService, ProfileService } from '@modules/services';
-import { isEmpty } from '@utils/functions';
+import { isEmpty, validateBetween } from '@utils/functions';
 import { common, colors } from '@constants/themes';
 import { MapPinIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
@@ -23,21 +23,19 @@ export default DeliveryAdd = (props) => {
     const [addressId] = useState(props.route.params.type === 2 ? props.route.params.item.id : 0);
     const [errorCity, setErrorCity] = useState('');
     const [addressStreet, setAddressStreet] = useState(props.route.params.type === 2 ? props.route.params.item.street : '');
+    const [visitStreet, setVisitStreet] = useState(false);
     const [errorStreet, setErrorStreet] = useState('');
     const [addressHouseNumber, setAddressHouseNumber] = useState(props.route.params.type === 2 ? props.route.params.item.houseNumber : '');
+    const [visitHouseNumber, setVisitHouseNumber] = useState(false);
     const [errorHouseNumber, setErrorHouseNumber] = useState('');
     const [addressFloor, setAddressFloor] = useState(props.route.params.type === 2 ? props.route.params.item.floor : '');
     const [addressDoorNumber, setAddressDoorNumber] = useState(props.route.params.type === 2 ? props.route.params.item.doorNumber : '');
 
     const [active, setActive] = useState(false);
     const [citys, setCitys] = useState([]);
-    const [cityObj, setCityObj] = useState({ id: user.city.id, cities: user.city.name });
-    // const [cityObj, setCityObj] = useState({ id: 0, cities: i18n.translate('Choose a city') });
+    const [cityObj, setCityObj] = useState(props.route.params.type === 2 ? { id: props.route.params.item.city_id, cities: props.route.params.item.city } : { id: user.city.id, cities: user.city.name });
 
     useEffect(() => {
-        const checkCity = (city) => {
-            return city.cities === props.route.params.item.city;
-        }
         const getCities = () => {
             dispatch(setLoading(true));
             AuthService.cities(country)
@@ -45,10 +43,6 @@ export default DeliveryAdd = (props) => {
                     dispatch(setLoading(false));
                     if (response.status == 200) {
                         setCitys(response.locations);
-                        if (props.route.params.type === 2) {
-                            var selectedCity = response.locations.filter(checkCity);
-                            setCityObj(selectedCity[0]);
-                        }
                     }
                 })
                 .catch((error) => {
@@ -60,9 +54,10 @@ export default DeliveryAdd = (props) => {
         return () => console.log('Unmounted');
     }, []);
 
-    useEffect(() => setErrorCity(''), [active, cityObj]);
-    useEffect(() => setErrorStreet(''), [addressStreet]);
-    useEffect(() => setErrorHouseNumber(''), [addressHouseNumber]);
+    useEffect(() => {
+        (visitStreet && isEmpty(addressStreet)) || (visitStreet && !validateBetween(addressStreet, 2, 100)) ? setErrorStreet('The text length must be between 2 ~ 100 characters') : setErrorStreet('');
+        (visitHouseNumber && isEmpty(addressHouseNumber)) || (visitHouseNumber && !validateBetween(addressHouseNumber, 1, 20)) ? setErrorHouseNumber('The text must be less more than 20 characters') : setErrorHouseNumber('');
+    }, [addressStreet, visitStreet, addressHouseNumber, visitHouseNumber]);
 
     const onSave = () => {
         dispatch(setLoading(true));
@@ -96,9 +91,9 @@ export default DeliveryAdd = (props) => {
                 </View>
                 <View style={common.headerRight}>
                     <TouchableOpacity
-                        disabled={cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber)}
+                        disabled={cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber}
                         onPress={() => onSave()}>
-                        <Text style={(cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber)) ? [common.headerRightText, common.fontColorGrey] : common.headerRightText}>{i18n.translate('Set')}</Text>
+                        <Text style={(cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber) ? [common.headerRightText, common.fontColorGrey] : common.headerRightText}>{i18n.translate('Set')}</Text>
                     </TouchableOpacity>
                 </View>
             </Header>
@@ -144,6 +139,7 @@ export default DeliveryAdd = (props) => {
                                     inputContainerStyle={styles.inputContainer}
                                     onChangeText={(value) => {
                                         setAddressStreet(value);
+                                        setVisitStreet(true);
                                     }}
                                 />
                                 <Text style={common.errorText}>{errorStreet}</Text>
@@ -163,6 +159,7 @@ export default DeliveryAdd = (props) => {
                                         inputContainerStyle={styles.inputContainer}
                                         onChangeText={(value) => {
                                             setAddressHouseNumber(value);
+                                            setVisitHouseNumber(true);
                                         }}
                                     />
                                     <Text style={common.errorText}>{errorHouseNumber}</Text>

@@ -173,5 +173,7 @@
     "Back to the login": "Back to the login",
     "No Menu": "No Menu",
 
-    "The text must be less more than 300 characters": "The text must be less more than 300 characters"
+    "The text must be less more than 300 characters": "The text must be less more than 300 characters",
+    "The text length must be between 2 ~ 100 characters": "The text length must be between 2 ~ 100 characters",
+    "The text must be less more than 20 characters": "The text must be less more than 20 characters"
 }

@@ -24,9 +24,9 @@ export default ReviewAdd = (props) => {
     const [review] = useState(props.route.params.review);
     const [reviewCode] = useState(props.route.params.reviewCode);
     const [ratingStar, setRatingStar] = useState(isEmpty(props.route.params.review.review_rating) ? 0 : props.route.params.review.review_rating);
+    const [reviewText, setReviewText] = useState(isEmpty(props.route.params.review.review_message) ? '' : props.route.params.review.review_message);
     const [visitReviewText, setVisitReviewText] = useState(false);
     const [errorReviewText, setErrorReviewText] = useState('');
-    const [reviewText, setReviewText] = useState(isEmpty(props.route.params.review.review_message) ? '' : props.route.params.review.review_message);
     const [accept, setAccept] = useState(false);
     const [agree, setAgree] = useState(false);
 

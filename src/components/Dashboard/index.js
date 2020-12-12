@@ -67,7 +67,7 @@ export default Dashboard = (props) => {
                                 key='featured'
                                 data={props.featured}
                                 onDetail={(item) => props.onDetail(item)}
-                                count={props.result.length}
+                                count={isEmpty(props.result) ? 0 : props.result.length}
                                 shown={(props.search == '' &&
                                     props.filters.freeDelivery == 0 &&
                                     props.filters.newest == 0 &&

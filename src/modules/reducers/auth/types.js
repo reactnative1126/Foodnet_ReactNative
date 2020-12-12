@@ -3,5 +3,6 @@ export default {
     SET_COUNTRY: 'SET_COUNTRY',
     SET_CITY: 'SET_CITY',
     SET_USER: 'SET_USER',
+    SET_USER_CITY: 'SET_USER_CITY',
     DELETE_USER: 'DELETE_USER'
 }

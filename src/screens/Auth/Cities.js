@@ -13,7 +13,7 @@ import i18n from '@utils/i18n';
 
 export default Cities = (props) => {
     const dispatch = useDispatch();
-    const { loading, logged, country, user } = useSelector(state => state.auth);
+    const { logged, country, user } = useSelector(state => state.auth);
 
     const [active, setActive] = useState(false);
     const [citys, setCitys] = useState([]);
@@ -22,23 +22,23 @@ export default Cities = (props) => {
     const [cityStatus, setCityStatus] = useState(false);
 
     useEffect(() => {
-            const handleBackButton = () => { return true; }
-            BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+        const handleBackButton = () => { return true; }
+        BackHandler.addEventListener('hardwareBackPress', handleBackButton);
 
-            const getCities = () => {
-                dispatch(setLoading(true));
-                AuthService.cities(country)
-                    .then((response) => {
-                        dispatch(setLoading(false));
-                        if (response.status == 200) {
-                            setCitys(response.locations);
-                        }
-                    })
-                    .catch((error) => {
-                        dispatch(setLoading(false));
-                    });
-            }
-            getCities();
+        const getCities = () => {
+            dispatch(setLoading(true));
+            AuthService.cities(country)
+                .then((response) => {
+                    dispatch(setLoading(false));
+                    if (response.status == 200) {
+                        setCitys(response.locations);
+                    }
+                })
+                .catch((error) => {
+                    dispatch(setLoading(false));
+                });
+        }
+        getCities();
     }, []);
 
     const onSave = () => {

@@ -3,7 +3,6 @@ import { createStackNavigator, TransitionPresets } from '@react-navigation/stack
 
 import {
   Profile, ProfileEdit, ProfileDelete, ProfilePassword, 
-  DeliveryList, DeliveryAdd,
   ReviewList, ReviewAdd, ReviewDelete,
   CouponCodes,
   Success, Errors
@@ -18,9 +17,6 @@ export default ProfileStack = () => {
       <StackProfile.Screen name='ProfileEdit' component={ProfileEdit} options={navOptionHandler} />
       <StackProfile.Screen name='ProfileDelete' component={ProfileDelete} options={navOptionHandler} />
       <StackProfile.Screen name='ProfilePassword' component={ProfilePassword} options={navOptionHandler} />
-
-      <StackProfile.Screen name='DeliveryList' component={DeliveryList} options={navOptionHandler} />
-      <StackProfile.Screen name='DeliveryAdd' component={DeliveryAdd} options={navOptionHandler} />
 
       <StackProfile.Screen name='ReviewList' component={ReviewList} options={navOptionHandler} />
       <StackProfile.Screen name='ReviewAdd' component={ReviewAdd} options={navOptionHandler} />

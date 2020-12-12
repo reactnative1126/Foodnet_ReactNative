@@ -173,5 +173,7 @@
     "Back to the login": "Vissza a bejelentkezéshez",
     "No Menu": "Nincs menü",
 
-    "The text must be less more than 300 characters": "A szövegnek kevesebbnek kell lennie, mint 300 karakter"
+    "The text must be less more than 300 characters": "A szövegnek kevesebbnek kell lennie, mint 300 karakter",
+    "The text length must be between 2 ~ 100 characters": "A szöveg hosszának 2 ~ 100 karakter között kell lennie",
+    "The text must be less more than 20 characters": "A szövegnek 20 karakternél rövidebbnek kell lennie"
 }

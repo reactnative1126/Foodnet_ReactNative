@@ -173,5 +173,7 @@
     "Back to the login": "Înapoi la autentificare",
     "No Menu": "Fără meniu",
 
-    "The text must be less more than 300 characters": "Textul trebuie să aibă mai puțin de 300 de caractere"
+    "The text must be less more than 300 characters": "Textul trebuie să aibă mai puțin de 300 de caractere",
+    "The text length must be between 2 ~ 100 characters": "Lungimea textului trebuie să aibă între 2 și 100 de caractere",
+    "The text must be less more than 20 characters": "Textul trebuie să aibă mai puțin de 20 de caractere"
 }

@@ -6,6 +6,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import HomeStack from '@navigations/StackNavigators/HomeStackNavigator';
 import ProfileStack from '@navigations/StackNavigators/ProfileStackNavigator';
+import DeliveryStack from '@navigations/StackNavigators/DeliveryStackNavigator';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
@@ -21,6 +22,7 @@ export default DrawerNavigator = () => {
         <Drawer.Navigator initialRouteName="Home" drawerContent={props => <DrawerContent {...props} />} drawerStyle={{ width: wp('100%') }}>
             <Drawer.Screen name="Home" component={HomeStack} options={navOptionHandler} />
             <Drawer.Screen name="Profile" component={ProfileStack} options={navOptionHandler} />
+            <Drawer.Screen name="Delivery" component={DeliveryStack} options={navOptionHandler} />
         </Drawer.Navigator>
     )
 }
@@ -67,14 +69,11 @@ const DrawerContent = (props) => {
                             <OrderIcon />
                             <Text style={styles.menuTitle}>{i18n.translate('My orders')}</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.menuItem} onPress={() => {
-                            console.log(user.token);
-                            props.navigation.navigate('Profile');
-                        }}>
+                        <TouchableOpacity style={styles.menuItem} onPress={() => props.navigation.navigate('Profile')}>
                             <ProfileIcon />
                             <Text style={styles.menuTitle}>{i18n.translate('Profile')}</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.menuItem} onPress={() => props.navigation.navigate('Profile', { screen: 'DeliveryList' })}>
+                        <TouchableOpacity style={styles.menuItem} onPress={() => props.navigation.navigate('Delivery')}>
                             <LocationIcon />
                             <Text style={styles.menuTitle}>{i18n.translate('My addresses')}</Text>
                         </TouchableOpacity>

@@ -5,6 +5,7 @@ const ProfileService = {
         setClientToken(token);
         return axios.get(`/delivery-address/${country}`).then((response) => {
             removeClientToken();
+            console.log(token, response.data)
             return response.data;
         });
     },

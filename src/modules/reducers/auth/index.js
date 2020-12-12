@@ -44,6 +44,11 @@ export default function authReducer(state = initialState, action) {
                 logged: true,
                 user: action.payload,
             };
+        case types.SET_USER_CITY:
+            return {
+                ...state,
+                user: action.payload,
+            };
         case types.DELETE_USER:
             return {
                 ...state,

@@ -4,7 +4,7 @@ import { Container, Header } from 'native-base';
 import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import { setLoading, setCountry, setCity, setUser } from '@modules/reducers/auth/actions';
+import { setLoading, setCountry, setCity, setUser, setUserCity } from '@modules/reducers/auth/actions';
 import { AuthService } from '@modules/services';
 import { isEmpty } from '@utils/functions';
 import { common, colors } from '@constants/themes';
@@ -40,7 +40,21 @@ export default Languages = (props) => {
                     var cityOne = await response.locations.filter(logged ? checkUserCity : checkCity);
                     dispatch(setCountry(languages[language].code));
                     i18n.setLocale(languages[language].code);
-                    logged ? dispatch(setUser({
+                    // logged ? dispatch(setUser({
+                    //     token: user.token,
+                    //     email: user.email,
+                    //     name: user.name,
+                    //     city: {
+                    //         id: cityOne[0].id,
+                    //         name: cityOne[0].cities,
+                    //         status: user.city.status
+                    //     }
+                    // })) : dispatch(setCity({
+                    //     id: cityOne[0].id,
+                    //     name: cityOne[0].cities,
+                    //     status: city.status
+                    // }))
+                    dispatch(setUserCity({
                         token: user.token,
                         email: user.email,
                         name: user.name,
@@ -49,7 +63,8 @@ export default Languages = (props) => {
                             name: cityOne[0].cities,
                             status: user.city.status
                         }
-                    })) : dispatch(setCity({
+                    }));
+                    dispatch(setCity({
                         id: cityOne[0].id,
                         name: cityOne[0].cities,
                         status: city.status
