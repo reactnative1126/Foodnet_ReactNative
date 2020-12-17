@@ -175,5 +175,7 @@
 
     "The text must be less more than 300 characters": "The text must be less more than 300 characters",
     "The text length must be between 2 ~ 100 characters": "The text length must be between 2 ~ 100 characters",
-    "The text must be less more than 20 characters": "The text must be less more than 20 characters"
+    "The text must be less more than 20 characters": "The text must be less more than 20 characters",
+    "What kind of ": "What kind of ",
+    "do you care about?": " do you care about?"
 }

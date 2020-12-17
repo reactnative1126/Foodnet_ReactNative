@@ -35,16 +35,7 @@ export default Detail = (props) => {
     const [restaurant, setRestaurant] = useState(props.route.params.restaurant);
     const [filterList, setFilterList] = useState([]);
     const [categories, setCategories] = useState([]);
-    const [category, setCategory] = useState({
-        category_id: 0,
-        category_name: ''
-    });
-    const [subCategories, setSubCategories] = useState([]);
-    const [subCategory, setSubCategory] = useState({
-        subcategoryId: 0,
-        propertyValTransId: 0,
-        subcategories_name: ''
-    });
+    const [category, setCategory] = useState(0);
     const [products, setProducts] = useState([]);
     const [information, setInformation] = useState({
         restaurant_id: 0,
@@ -58,6 +49,7 @@ export default Detail = (props) => {
     const [rating, setRating] = useState(0);
     const [reviews, setReviews] = useState([]);
     const [average, setAverage] = useState(0);
+
 
     const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -109,31 +101,13 @@ export default Detail = (props) => {
         }
         getFilterList();
 
-        const getCategories = () => {
-            dispatch(setLoading(true));
-            FoodService.categories(country, restaurant.restaurant_id)
-                .then(async (response) => {
-                    if (response.status == 200) {
-                        setCategories(response.result);
-                        if (!isEmpty(response.result)) {
-                            setCategory(response.result[0]);
-                        }
-                    }
-                    dispatch(setLoading(false));
-                })
-                .catch((error) => {
-                    dispatch(setLoading(false));
-                });
-        }
-        getCategories();
-
         const getInformation = () => {
             FoodService.information(country, restaurant.restaurant_name)
                 .then((response) => {
                     if (response.status == 200) {
                         setInformation(response.result[0]);
                     }
-                })
+                });
         }
 
         setTimeout(() => getInformation(), 500);
@@ -142,44 +116,110 @@ export default Detail = (props) => {
     }, []);
 
     useEffect(() => {
-        dispatch(setLoading(true));
-        FoodService.subCategories(country, restaurant.restaurant_id, category.category_id)
-            .then(async (response) => {
-                if (response.status == 200) {
-                    setSubCategories(response.result);
-                    if (!isEmpty(response.result)) {
-                        if ((country === 'en' && category.category_name === 'Daily Menu') || (country === 'ro' && category.category_name === 'Meniul Zilei') || (country === 'hu' && category.category_name === 'Napi Menü')) {
-                            var d = new Date();
-                            var n = d.getDay();
-                            setSubCategory(response.result[n === 0 ? 6 : n - 1]);
-                        } else {
-                            setSubCategory(response.result[0]);
-                        }
+        if (category === 0) {
+            dispatch(setLoading(true));
+            FoodService.categories(country, restaurant.restaurant_name, search)
+                .then(async (response) => {
+                    if (response.status == 200) {
+                        var categoriesTemp = [];
+                        var productsTemp = [];
+                        await Object.keys(response.result).map((key) => {
+                            const items = response.result[key];
+                            categoriesTemp = [...categoriesTemp, {
+                                category_id: items[0].category_id,
+                                category_name: key
+                            }];
+                            productsTemp = [...productsTemp, {
+                                category_name: key,
+                                product_list: items
+                            }]
+                        });
+
+                        var productsFinal = await Promise.all(productsTemp.map(async (productOne, key) => {
+                            var productList = await Promise.all(productOne.product_list.map(async (product, key) => {
+                                var allergens = await FoodService.allergen(country, product.productId, restaurant.restaurant_name);
+                                return { ...product, allergens, cart_count: 0 };
+                            }));
+                            return { ...productOne, product_list: productList }
+                        }));
+                        setCategories(categoriesTemp);
+                        setProducts(productsFinal);
                     }
+                    dispatch(setLoading(false));
+                })
+                .catch((error) => {
+                    dispatch(setLoading(false));
+                });
+        } else {
+            dispatch(setLoading(true));
+            FoodService.products(country, category, restaurant.restaurant_name, search)
+                .then(async (response) => {
+                    if (response.status == 200) {
+                        var productsFinal = await Promise.all(response.result.map(async (productOne, key) => {
+                            var productList = await Promise.all(productOne.product_list.map(async (product, key) => {
+                                var allergens = await FoodService.allergen(country, product.productId, restaurant.restaurant_name);
+                                return { ...product, allergens, cart_count: 0 };
+                            }));
+                            return { ...productOne, product_list: productList }
+                        }));
+                        setProducts(productsFinal);
+                    }
+                    dispatch(setLoading(false));
+                })
+                .catch((error) => {
+                    dispatch(setLoading(false));
+                });
+        }
+
+        FoodService.reviews(restaurant.restaurant_name, rating)
+            .then((response) => {
+                if (response.status == 200) {
+                    setReviews(response.result[0].ratings);
+                    setAverage(response.result[0].AVGrating);
                 }
-                dispatch(setLoading(false));
-            })
-            .catch((error) => {
-                dispatch(setLoading(false));
             });
-    }, [category]);
+    }, [category, rating, country]);
 
     useEffect(() => {
-        dispatch(setLoading(true));
-        FoodService.products(country, restaurant.restaurant_id, category.category_id, subCategory.subcategoryId, subCategory.propertyValTransId, search)
-            .then(async (response) => {
-                if (response.status == 200) {
-                    setProducts(response.result);
-                } else {
-                    setProducts([]);
-                }
-                dispatch(setLoading(false));
-            })
-            .catch((error) => {
-                setProducts([]);
-                dispatch(setLoading(false));
-            });
-    }, [subCategory]);
+        if (category === 0) {
+            FoodService.categories(country, restaurant.restaurant_name, search)
+                .then(async (response) => {
+                    if (response.status == 200) {
+                        var productsTemp = [];
+                        await Object.keys(response.result).map((key) => {
+                            const items = response.result[key];
+                            productsTemp = [...productsTemp, {
+                                category_name: key,
+                                product_list: items
+                            }]
+                        });
+
+                        var productsFinal = await Promise.all(productsTemp.map(async (productOne, key) => {
+                            var productList = await Promise.all(productOne.product_list.map(async (product, key) => {
+                                var allergens = await FoodService.allergen(country, product.productId, restaurant.restaurant_name);
+                                return { ...product, allergens, cart_count: 0 };
+                            }));
+                            return { ...productOne, product_list: productList }
+                        }));
+                        setProducts(productsFinal);
+                    }
+                })
+        } else {
+            FoodService.products(country, category, restaurant.restaurant_name, search)
+                .then(async (response) => {
+                    if (response.status == 200) {
+                        var productsFinal = await Promise.all(response.result.map(async (productOne, key) => {
+                            var productList = await Promise.all(productOne.product_list.map(async (product, key) => {
+                                var allergens = await FoodService.allergen(country, product.productId, restaurant.restaurant_name);
+                                return { ...product, allergens, cart_count: 0 };
+                            }));
+                            return { ...productOne, product_list: productList }
+                        }));
+                        setProducts(productsFinal);
+                    }
+                })
+        }
+    }, [search]);
 
     return (
         <SafeAreaView style={styles.saveArea}>
@@ -203,14 +243,11 @@ export default Detail = (props) => {
                                 return <Menu
                                     categories={categories}
                                     category={category}
-                                    subCategories={subCategories}
-                                    subCategory={subCategory}
                                     search={search}
                                     products={products}
                                     onMinus={(value) => alert('Minus')}
                                     onPlus={(value) => alert('Plus')}
                                     onCategory={(value) => setCategory(value)}
-                                    onSubCategory={(value) => setSubCategory(value)}
                                     onSearch={(value) => setSearch(value)}
                                     jumpTo={jumpTo} />;
                             case 'info':

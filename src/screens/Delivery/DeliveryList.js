@@ -33,7 +33,7 @@ export default DeliveryList = (props) => {
                 dispatch(setLoading(false));
                 console.log(error.message);
             });
-    }, [deliveryStatus]);
+    }, [deliveryStatus, country]);
 
     const onDelete = () => {
         setVisible(false);

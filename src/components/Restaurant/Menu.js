@@ -29,16 +29,16 @@ const RenderOne = ({ one, index, onMinus, onPlus }) => {
                 containerStyles={styles.loader}
             />
             <View key={index} style={loader ? styles.loader : styles.product}>
-                <FastImage style={styles.productImage} source={{ uri: RES_URL + one.item.productImageUrl }} resizeMode='cover' onLoadEnd={e => setLoader(false)} />
-                <Text style={styles.productTitle} numberOfLines={1}>{one.item.productTitle}</Text>
-                <Text style={styles.productDescription}>{one.item.productDescription}</Text>
-                {!isEmpty(one.item.allergens) ? (
-                    <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {one.item.allergens.map((allergen, key) => (
-                        <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != one.item.allergens.length - 1 ? ', ' : ''}</Text>
+                <FastImage style={styles.productImage} source={{ uri: RES_URL + one.item.product_imageUrl }} resizeMode='cover' onLoadEnd={e => setLoader(false)} />
+                <Text style={styles.productTitle} numberOfLines={1}>{one.item.product_name}</Text>
+                <Text style={styles.productDescription}>{one.item.product_description}</Text>
+                {!isEmpty(one.item.allergens_name) ? (
+                    <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {one.item.allergens_name.map((allergen, key) => (
+                        <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != one.item.allergens_name.length - 1 ? ', ' : ''}</Text>
                     ))})</Text>
                 ) : null}
                 <View style={styles.productCart}>
-                    <Text style={styles.price}>{one.item.productPrice} Ft</Text>
+                    <Text style={styles.price}>{one.item.product_price} Ft</Text>
                     <View style={styles.cart}>
                         <TouchableOpacity style={styles.countButton1} onPress={() => onMinus(one.item)}>
                             <Icon type='material-community' name='minus' color='#333' size={25} />
@@ -65,9 +65,18 @@ export default Menu = (props) => {
 
     const renderItem = (item, index) => {
         return (
-            <TouchableOpacity key={index} style={[styles.category, props.category == item.item.category_id ? common.borderColorYellow : common.borderColorGrey]}
-                onPress={() => props.onCategory(item.item.category_id)}>
+            <TouchableOpacity key={index} style={[styles.category, props.category.category_id == item.item.category_id ? common.borderColorYellow : common.borderColorGrey]}
+                onPress={() => props.onCategory(item.item)}>
                 <Text style={styles.name}>{item.item.category_name}</Text>
+            </TouchableOpacity>
+        )
+    }
+
+    const renderSubItem = (item, index) => {
+        return (
+            <TouchableOpacity key={index} style={[styles.category, props.subCategory.propertyValTransId == item.item.propertyValTransId ? common.borderColorYellow : common.borderColorGrey]}
+                onPress={() => props.onSubCategory(item.item)}>
+                <Text style={styles.name}>{item.item.subcategories_name}</Text>
             </TouchableOpacity>
         )
     }
@@ -75,7 +84,7 @@ export default Menu = (props) => {
     const renderProduct = (product, index) => {
         return (
             <Card key={index} style={styles.card}>
-                <Text style={[styles.cardTitle, { fontSize: 16 }]}>{product.item.category_name}</Text>
+                {/* <Text style={[styles.cardTitle, { fontSize: 16 }]}>{product.item.category_name}</Text> */}
                 <FlatList
                     showsHorizontalScrollIndicator={false}
                     data={product.item.product_list}
@@ -94,9 +103,20 @@ export default Menu = (props) => {
                 <FlatList
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
-                    data={[{ category_id: 0, category_name: i18n.translate('All') }, ...props.categories]}
+                    data={props.categories}
                     keyExtractor={(category, index) => index.toString()}
                     renderItem={renderItem}
+                />
+            </Card>
+            <View style={{ height: 10 }} />
+            <Card key='subcategories' style={styles.card}>
+                <Text style={styles.cardTitle}>{i18n.translate('What kind of ')}{props.category.category_name}{i18n.translate('do you care about?')}</Text>
+                <FlatList
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    data={props.subCategories}
+                    keyExtractor={(subCategory, index) => index.toString()}
+                    renderItem={renderSubItem}
                 />
             </Card>
             <View style={{ height: 10 }} />
@@ -119,13 +139,17 @@ export default Menu = (props) => {
                     <Text style={[styles.cardTitle, { textAlign: 'center' }]}>{i18n.translate('No Menu')}</Text>
                 </View>
             ) : (
-                    <FlatList
-                        contentContainerStyle={{ paddingVertical: 20 }}
-                        showsHorizontalScrollIndicator={false}
-                        data={props.products}
-                        keyExtractor={(product, index) => index.toString()}
-                        renderItem={renderProduct}
-                    />
+                    <Card key='product' style={styles.card}>
+                        <Text style={[styles.cardTitle, { fontSize: 14 }]}>{props.category.category_name} - {props.subCategory.subcategories_name}</Text>
+                        <FlatList
+                            contentContainerStyle={{ paddingVertical: 20 }}
+                            showsHorizontalScrollIndicator={false}
+                            data={props.products}
+                            keyExtractor={(product, index) => index.toString()}
+                            // renderItem={renderProduct}
+                            renderItem={(one, index) => (<RenderOne one={one} index={index} onMinus={props.onMinus} onPlus={props.onPlus} />)}
+                        />
+                    </Card>
                 )}
         </View>
     );
@@ -186,7 +210,7 @@ const styles = StyleSheet.create({
         borderRadius: 6,
     },
     default: {
-      height: 0
+        height: 0
     },
     product: {
         marginBottom: 24,
@@ -204,7 +228,7 @@ const styles = StyleSheet.create({
     },
     productImage: {
         width: '100%',
-        height: 80,
+        height: 200,
         borderRadius: 6
     },
     productTitle: {

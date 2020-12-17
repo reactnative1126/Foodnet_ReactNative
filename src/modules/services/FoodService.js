@@ -26,34 +26,63 @@ const FoodService = {
             return response.data;
         });
     },
-    categories: function (country, restaurantName, searchedProduct) {
-        return axios.post(`/product`, {
-            lang: country,
-            restaurantName,
-            searchedProduct
-        }).then((response) => {
-            return response.data;
-        });
-    },
-    products: function (country, categoryId, restaurantName, searchedProduct) {
+    
+    categories: function (country, restaurantId) {
         return axios.post(`/product/category`, {
-            lang: country,
-            categoryId,
-            restaurantName,
-            searchedProduct
+            restaurantId,
+            lang: country
         }).then((response) => {
             return response.data;
         });
-    },
-    allergen: function (country, productId, restaurantName) {
-        return axios.post(`/product/allergen`, {
+    },    
+    subCategories: function (country, restaurantId, categoryId) {
+        return axios.post(`/product/subcategories`, {
+            restaurantId,
             lang: country,
-            productId,
-            restaurantName
+            categoryId
         }).then((response) => {
-            return response.data.result;
+            return response.data;
         });
-    },
+    }, 
+    products: function (country, restaurantId, categoryId, subcategoryId, propertyValTransId, searchedProduct) {
+        return axios.post(`/product/subcategories-products`, {
+            restaurantId,
+            lang: country,
+            subcategoryId,
+            propertyValTransId,
+            categoryId
+        }).then((response) => {
+            return response.data;
+        });
+    }, 
+    // categories: function (country, restaurantName, searchedProduct) {
+    //     return axios.post(`/product`, {
+    //         lang: country,
+    //         restaurantName,
+    //         searchedProduct
+    //     }).then((response) => {
+    //         return response.data;
+    //     });
+    // },
+    // products: function (country, categoryId, restaurantName, searchedProduct) {
+    //     return axios.post(`/product/category`, {
+    //         lang: country,
+    //         categoryId,
+    //         restaurantName,
+    //         searchedProduct
+    //     }).then((response) => {
+    //         return response.data;
+    //     });
+    // },
+    // allergen: function (country, productId, restaurantName) {
+    //     return axios.post(`/product/allergen`, {
+    //         lang: country,
+    //         productId,
+    //         restaurantName
+    //     }).then((response) => {
+    //         return response.data.result;
+    //     });
+    // },
     information: function (country, restaurantName) {
         return axios.get(`/restaurant/info/${country}/${restaurantName}`).then((response) => {
             return response.data;

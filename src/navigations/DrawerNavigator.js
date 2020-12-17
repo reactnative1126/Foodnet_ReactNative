@@ -21,8 +21,16 @@ export default DrawerNavigator = () => {
     return (
         <Drawer.Navigator initialRouteName="Home" drawerContent={props => <DrawerContent {...props} />} drawerStyle={{ width: wp('100%') }}>
             <Drawer.Screen name="Home" component={HomeStack} options={navOptionHandler} />
-            <Drawer.Screen name="Profile" component={ProfileStack} options={navOptionHandler} />
-            <Drawer.Screen name="Delivery" component={DeliveryStack} options={navOptionHandler} />
+            <Drawer.Screen name="Profile" component={ProfileStack} options={{
+                headerShown: false,
+                animationEnabled: false,
+                swipeEnabled: false
+            }} />
+            <Drawer.Screen name="Delivery" component={DeliveryStack} options={{
+                headerShown: false,
+                animationEnabled: false,
+                swipeEnabled: false
+            }} />
         </Drawer.Navigator>
     )
 }
