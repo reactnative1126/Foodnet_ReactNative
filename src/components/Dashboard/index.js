@@ -27,7 +27,7 @@ export default Dashboard = (props) => {
                         <View style={styles.topRight}>
                             <Text style={styles.topTitle}>{i18n.translate('Extra discounts')}</Text>
                             <View style={styles.topSpace} />
-                            <View style={{ flexDirection: 'row' }}>
+                            <View style={common.flexRow}>
                                 <TouchableOpacity style={styles.topButton}>
                                     <Text style={styles.topText}>{i18n.translate('Know more')}</Text>
                                 </TouchableOpacity>

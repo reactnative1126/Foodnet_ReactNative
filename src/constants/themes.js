@@ -65,6 +65,9 @@ export const common = StyleSheet.create({
     width20: {
         width: 20
     },
+    width30: {
+        width: 30
+    },
     width100P: {
         width: '100%'
     },
@@ -97,6 +100,9 @@ export const common = StyleSheet.create({
         textDecorationLine: 'underline'
     },
 
+    flexRow: {
+        flexDirection: 'row'
+    },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -199,7 +205,7 @@ export const common = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
-    
+
     errorContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -218,5 +224,9 @@ export const common = StyleSheet.create({
         marginTop: 5,
         marginHorizontal: 5,
         color: colors.RED.PRIMARY
-    }
+    },
+    iconText: {
+        fontWeight: 'bold',
+        color: '#F05050'
+    },
 });

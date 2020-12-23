@@ -12,6 +12,7 @@ import Cities from '@screens/Auth/Cities';
 
 import Home from '@screens/Home';
 import Detail from '@screens/Home/Detail';
+import Extra from '@screens/Home/Extra';
 
 import DeliveryList from '@screens/Delivery/DeliveryList';
 import DeliveryAdd from '@screens/Delivery/DeliveryAdd';
@@ -25,12 +26,15 @@ import ReviewAdd from '@screens/Review/ReviewAdd';
 import ReviewDelete from '@screens/Review/ReviewDelete';
 import CouponCodes from '@screens/Profile/CouponCodes';
 
+import Cart from '@screens/Order/Cart';
+import CartDetail from '@screens/Order/CartDetail';
+
 export {
     Internet,
     Languages,
     Success,
     Errors,
-    
+
     Start,
     SignIn,
     SignUp,
@@ -40,6 +44,7 @@ export {
 
     Home,
     Detail,
+    Extra,
 
     Profile,
     DeliveryList,
@@ -50,5 +55,8 @@ export {
     ReviewList,
     ReviewAdd,
     ReviewDelete,
-    CouponCodes
+    CouponCodes,
+
+    Cart,
+    CartDetail
 }

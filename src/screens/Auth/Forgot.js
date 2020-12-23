@@ -83,8 +83,8 @@ export default Forgot = (props) => {
                         ) : (
                                 <View style={common.errorContainer}>
                                     <ErrorIcon />
-                                    <Text style={{ fontWeight: 'bold', color: '#F05050' }}>{errorMsg}</Text>
-                                    <View style={{ width: 30 }} />
+                                    <Text style={common.iconText}>{errorMsg}</Text>
+                                    <View style={common.width30} />
                                 </View>
                             )}
                         <View style={styles.inputView}>
@@ -127,8 +127,8 @@ export default Forgot = (props) => {
                             ) : (
                                     <View style={common.errorContainer}>
                                         <ErrorIcon />
-                                        <Text style={{ fontWeight: 'bold', color: '#F05050' }}>{errorMsg}</Text>
-                                        <View style={{ width: 30 }} />
+                                        <Text style={common.iconText}>{errorMsg}</Text>
+                                        <View style={common.width30} />
                                     </View>
                                 )}
                             <CodeInput

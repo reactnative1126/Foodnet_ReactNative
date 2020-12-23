@@ -13,6 +13,10 @@ const initialState = {
         card: 0,
         withinOneHour: 0
     },
+    cartRestaurant: null,
+    cartProducts: [],
+    cartBadge: 0,
+    cartToast: false
 };
 
 export default function foodReducer(state = initialState, action) {
@@ -21,6 +25,26 @@ export default function foodReducer(state = initialState, action) {
             return {
                 ...state,
                 filters: action.payload,
+            };
+        case types.SET_CART_RESTAURANT:
+            return {
+                ...state,
+                cartRestaurant: action.payload,
+            };
+        case types.SET_CART_PRODUCTS:
+            return {
+                ...state,
+                cartProducts: action.payload,
+            };
+        case types.SET_CART_BADGE:
+            return {
+                ...state,
+                cartBadge: action.payload,
+            };
+        case types.SET_CART_TOAST:
+            return {
+                ...state,
+                cartToast: action.payload,
             };
 
         default:

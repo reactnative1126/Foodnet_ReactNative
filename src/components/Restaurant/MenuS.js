@@ -3,11 +3,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Platform, StatusBar, StyleSheet, LogBox, FlatList, View, Text, TouchableOpacity } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
-import Card from '../Athena/Card';
 import { setLoading } from '@modules/reducers/auth/actions';
+import Card from '../Athena/Card';
 import { FoodService } from '@modules/services';
 import { isEmpty } from '@utils/functions';
 import { common, colors } from '@constants/themes';
+import { images, icons } from '@constants/assets';
 import { RES_URL } from '@constants/configs';
 import { CartWhiteIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
@@ -16,17 +17,17 @@ import { TextField } from 'react-native-material-textfield';
 import FastImage from 'react-native-fast-image';
 import ContentLoader from 'react-native-easy-content-loader';
 
-const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onExtra, onModal }) => {
+const RenderOne = ({ cart, restaurant, product, index, onExtra }) => {
     const [loader, setLoader] = useState(true);
     const [count, setCount] = useState(1);
     const [flag, setFlag] = useState(false);
 
     useEffect(() => {
-        var index = cartProducts.findIndex((cartProduct) => {
-            return cartRestaurant.restaurant_id == restaurant.restaurant_id && cartProduct.productId == product.product_id && cartProduct.variantId == product.variant_id
+        var index = cart.findIndex((one) => {
+            return one.restaurant.restaurant_id == restaurant.restaurant_id && one.product.product_id == product.product_id && one.product.variant_id == product.variant_id
         });
         if (index >= 0) {
-            setCount(cartProducts[index].quantity);
+            setCount(cart[index].productCount);
             setFlag(true);
         }
     });
@@ -42,7 +43,7 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
                 loading={loader}
                 containerStyles={styles.loader}
             />
-            <View key={index} style={loader ? styles.default : styles.product}>
+            <View key={index} style={loader ? styles.loader : styles.product}>
                 <FastImage style={styles.productImage} source={{ uri: RES_URL + product.product_imageUrl }} resizeMode='cover' onLoadEnd={e => setLoader(false)} />
                 <Text style={styles.productTitle} numberOfLines={1}>{product.product_name}</Text>
                 <Text style={styles.productDescription}>{product.product_description}</Text>
@@ -64,13 +65,7 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
                             <Icon type='material-community' name='plus' color='#333' size={25} />
                         </TouchableOpacity>
                         <View style={{ width: 10 }} />
-                        <TouchableOpacity style={styles.check} disabled={flag} onPress={() => {
-                            if (!isEmpty(cartProducts) && cartRestaurant.restaurant_id != restaurant.restaurant_id) {
-                                onModal();
-                            } else {
-                                onExtra(product, count);
-                            }
-                        }}>
+                        <TouchableOpacity style={styles.check} disabled={flag} onPress={() => onExtra(product, count)}>
                             {flag ? (<Icon type='material' name='check' color={colors.WHITE} size={25} />) : (<CartWhiteIcon />)}
                         </TouchableOpacity>
                     </View>
@@ -83,7 +78,7 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
 export default Menu = (props) => {
     const dispatch = useDispatch();
     const { country } = useSelector(state => state.auth);
-    const { cartRestaurant, cartProducts } = useSelector(state => state.food);
+    const { cart } = useSelector(state => state.food);
 
     const [products, setProducts] = useState([]);
 
@@ -91,7 +86,6 @@ export default Menu = (props) => {
 
     useEffect(() => {
         dispatch(setLoading(true));
-        setProducts([]);
         FoodService.products(country, props.restaurant.restaurant_id, props.category.category_id, props.subCategory.subcategoryId, props.subCategory.propertyValTransId, props.search)
             .then(async (response) => {
                 dispatch(setLoading(false));
@@ -105,7 +99,25 @@ export default Menu = (props) => {
                 dispatch(setLoading(false));
                 setProducts([]);
             });
-    }, [props.subCategory, cartRestaurant, cartProducts]);
+    }, [props.subCategory, cart]);
+
+    const renderItem = (item, index) => {
+        return (
+            <TouchableOpacity key={index} style={[styles.category, props.category.category_id == item.item.category_id ? common.borderColorYellow : common.borderColorGrey]}
+                onPress={() => props.onCategory(item.item)}>
+                <Text style={styles.name}>{item.item.category_name}</Text>
+            </TouchableOpacity>
+        )
+    }
+
+    const renderSubItem = (item, index) => {
+        return (
+            <TouchableOpacity key={index} style={[styles.category, props.subCategory.propertyValTransId == item.item.propertyValTransId ? common.borderColorYellow : common.borderColorGrey]}
+                onPress={() => props.onSubCategory(item.item)}>
+                <Text style={styles.name}>{item.item.subcategories_name}</Text>
+            </TouchableOpacity>
+        )
+    }
 
     return (
         <View style={styles.container}>
@@ -162,23 +174,13 @@ export default Menu = (props) => {
                 </View>
             ) : (
                     <Card key='product' style={styles.card}>
-                        <Text style={[styles.cardTitle, { marginTop: 20, fontSize: 14 }]}>{props.category.category_name} - {props.subCategory.subcategories_name}</Text>
+                        <Text style={[styles.cardTitle, { fontSize: 14 }]}>{props.category.category_name} - {props.subCategory.subcategories_name}</Text>
                         <FlatList
                             contentContainerStyle={{ paddingVertical: 20 }}
                             showsHorizontalScrollIndicator={false}
                             data={products}
                             keyExtractor={(product, index) => index.toString()}
-                            renderItem={(product, index) => (
-                                <Product
-                                    cartRestaurant={cartRestaurant}
-                                    cartProducts={cartProducts}
-                                    restaurant={props.restaurant}
-                                    product={product.item}
-                                    index={index}
-                                    onExtra={props.onExtra}
-                                    onModal={props.onModal}
-                                />
-                            )}
+                            renderItem={(product, index) => (<RenderOne cart={cart} restaurant={props.restaurant} product={product.item} index={index} onMinus={props.onMinus} onPlus={props.onPlus} onExtra={props.onExtra} />)}
                         />
                     </Card>
                 )}

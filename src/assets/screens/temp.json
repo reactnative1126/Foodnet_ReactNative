@@ -1,0 +1,115 @@
+{
+    "comment": "",
+    "optionals": [],
+    "product": {
+        "allergens_name": [
+            [Object
+            ]
+        ],
+        "product_description": "pizza prosciutto party",
+        "product_id": 9,
+        "product_imageUrl": "images/2020-12-15T18:53:16.864Z-cheesburger.png",
+        "product_name": "pizza prosciutto party",
+        "product_price": 33,
+        "variant_id": 8
+    },
+    "productCount": 1,
+    "requireds": [
+        {
+            "allergens_name": [Array
+            ],
+            "extra_dash": 1,
+            "extra_id": 8,
+            "extra_maxQuantity": 5,
+            "extra_minQuantity": 1,
+            "extra_name": "Soup ciorba",
+            "extra_price": 5
+        },
+        {
+            "allergens_name": [Array
+            ],
+            "extra_dash": 2,
+            "extra_id": 9,
+            "extra_maxQuantity": 2,
+            "extra_minQuantity": 1,
+            "extra_name": "Gordon bleu en",
+            "extra_price": 3
+        }
+    ],
+    "restaurant": {
+        "restaurant_close": "23:55",
+        "restaurant_coverImage": "images/2020-12-08T15:17:23.044Z-cover4.jpg",
+        "restaurant_description": "We are the best company in Romania Please order now!!! Lorem ispum dolor sit amet",
+        "restaurant_discount": 0,
+        "restaurant_id": 2,
+        "restaurant_name": "La Diavolo Home Delivery",
+        "restaurant_new": 1,
+        "restaurant_open": "08:00",
+        "restaurant_profileImage": "images/2020-12-08T15:17:34.464Z-logo2.png",
+        "restaurant_rating": 3
+    }
+}
+
+[
+    {
+        "cartId": "2020-12-22T07:04:54.922Z",
+        "comment": "",
+        "optionals": [],
+        "product": {
+            "allergens_name": [Array
+            ],
+            "product_description": "Pizza Hawai ",
+            "product_id": 8,
+            "product_imageUrl": "images/2020-12-15T18:29:04.087Z-crispy-ham.png",
+            "product_name": "Pizza Hawai ",
+            "product_price": 55,
+            "variant_id": 7
+        },
+        "productCount": 1,
+        "requireds": [],
+        "restaurant": {
+            "restaurant_close": "23:55",
+            "restaurant_coverImage": "images/2020-12-08T15:17:23.044Z-cover4.jpg",
+            "restaurant_description": "We are the best company in Romania Please order now!!! Lorem ispum dolor sit amet",
+            "restaurant_discount": 0,
+            "restaurant_id": 2,
+            "restaurant_name": "La Diavolo Home Delivery",
+            "restaurant_new": 1,
+            "restaurant_open": "08:00",
+            "restaurant_profileImage": "images/2020-12-08T15:17:34.464Z-logo2.png",
+            "restaurant_rating": 3
+        }
+    }
+]
+
+[
+    {
+        "cartId": "2020-12-22T07:04:54.922Z",
+        "comment": "",
+        "optionals": [],
+        "product": {
+            "allergens_name": [Array
+            ],
+            "product_description": "Pizza Hawai ",
+            "product_id": 8,
+            "product_imageUrl": "images/2020-12-15T18:29:04.087Z-crispy-ham.png",
+            "product_name": "Pizza Hawai ",
+            "product_price": 55,
+            "variant_id": 7
+        },
+        "productCount": 1,
+        "requireds": [],
+        "restaurant": {
+            "restaurant_close": "23:55",
+            "restaurant_coverImage": "images/2020-12-08T15:17:23.044Z-cover4.jpg",
+            "restaurant_description": "We are the best company in Romania Please order now!!! Lorem ispum dolor sit amet",
+            "restaurant_discount": 0,
+            "restaurant_id": 2,
+            "restaurant_name": "La Diavolo Home Delivery",
+            "restaurant_new": 1,
+            "restaurant_open": "08:00",
+            "restaurant_profileImage": "images/2020-12-08T15:17:34.464Z-logo2.png",
+            "restaurant_rating": 3
+        }
+    }
+]

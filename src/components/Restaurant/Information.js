@@ -5,9 +5,6 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { Icon } from 'react-native-elements';
 import Card from '../Athena/Card';
 import { isEmpty } from '@utils/functions';
-import { common, colors } from '@constants/themes';
-import { images, icons } from '@constants/assets';
-import { RES_URL } from '@constants/configs';
 import i18n from '@utils/i18n';
 
 export default Information = (props) => {

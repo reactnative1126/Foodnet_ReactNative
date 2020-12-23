@@ -7,7 +7,6 @@ import { Icon } from 'react-native-elements';
 import { setLoading } from '@modules/reducers/auth/actions';
 import { setFilters } from '@modules/reducers/food/actions';
 import { FoodService } from '@modules/services';
-import { isEmpty } from '@utils/functions';
 import { Cities, Dashboard, Filters } from '@components';
 import { common, colors } from '@constants/themes';
 import i18n from '@utils/i18n';

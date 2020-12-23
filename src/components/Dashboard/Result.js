@@ -6,7 +6,6 @@ import { Icon } from 'react-native-elements';
 import Card from '../Athena/Card';
 import { isEmpty } from '@utils/functions';
 import { common, colors } from '@constants/themes';
-import { images, icons } from '@constants/assets';
 import { RES_URL } from '@constants/configs';
 import i18n from '@utils/i18n';
 
@@ -34,14 +33,14 @@ const RenderItem = ({ result, index, onDetail }) => {
             {(result.item.restaurant_new > 0 || result.item.restaurant_discount > 0) && (
               <View style={styles.tagView}>
                 {result.item.restaurant_new > 0 && (
-                  <View style={{ flexDirection: 'row' }}>
+                  <View style={common.flexRow}>
                     <View style={styles.tag}>
                       <Text style={styles.tagText}>{i18n.translate('NEW RESTAURANT')}</Text>
                     </View>
                   </View>
                 )}
                 {result.item.restaurant_discount > 0 && (
-                  <View style={{ flexDirection: 'row' }}>
+                  <View style={common.flexRow}>
                     <View style={styles.tag}>
                       <Text style={styles.tagText}>{i18n.translate('SPECIAL PRICE')}</Text>
                     </View>

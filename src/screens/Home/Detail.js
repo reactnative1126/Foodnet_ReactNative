@@ -1,16 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Header } from 'native-base';
 import { Platform, StatusBar, StyleSheet, SafeAreaView, FlatList, View, Text, Animated, Image, TouchableOpacity } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
 import { setLoading } from '@modules/reducers/auth/actions';
+import { setCartRestaurant, setCartProducts, setCartBadge } from '@modules/reducers/food/actions';
 import { FoodService } from '@modules/services';
 import { isEmpty } from '@utils/functions';
 import { Menu, Information, Reviews } from '@components';
 import { common, colors } from '@constants/themes';
 import { RES_URL } from '@constants/configs';
-import { BackWhiteIcon, CartWhiteIcon } from '@constants/svgs';
+import { BackWhiteIcon, CartYellowIcon, CartWhiteIcon, CheckIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
 import moment from 'moment';
@@ -22,8 +23,8 @@ const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 export default Detail = (props) => {
     const dispatch = useDispatch();
-    const { logged, country, city, user } = useSelector(state => state.auth);
-    const { filters } = useSelector(state => state.food);
+    const { country } = useSelector(state => state.auth);
+    const { filters, cartBadge, cartToast } = useSelector(state => state.food);
 
     const [index, setIndex] = React.useState(0);
     const [routes] = React.useState([
@@ -32,7 +33,7 @@ export default Detail = (props) => {
         { key: 'third', title: i18n.translate('EVALUATION') },
     ]);
 
-    const [restaurant, setRestaurant] = useState(props.route.params.restaurant);
+    const [restaurant] = useState(props.route.params.restaurant);
     const [filterList, setFilterList] = useState([]);
     const [categories, setCategories] = useState([]);
     const [category, setCategory] = useState({
@@ -45,7 +46,6 @@ export default Detail = (props) => {
         propertyValTransId: 0,
         subcategories_name: ''
     });
-    const [products, setProducts] = useState([]);
     const [information, setInformation] = useState({
         restaurant_id: 0,
         restaurant_avgTransport: 0,
@@ -56,8 +56,11 @@ export default Detail = (props) => {
     });
     const [search, setSearch] = useState('');
     const [rating, setRating] = useState(0);
-    const [reviews, setReviews] = useState([]);
-    const [average, setAverage] = useState(0);
+    const [reviews] = useState([]);
+    const [average] = useState(0);
+    const [visible, setVisible] = useState(false);
+    const [first, setFirst] = useState(false);
+    const [modal, setModal] = useState(false);
 
     const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -113,13 +116,13 @@ export default Detail = (props) => {
             dispatch(setLoading(true));
             FoodService.categories(country, restaurant.restaurant_id)
                 .then(async (response) => {
+                    dispatch(setLoading(false));
                     if (response.status == 200) {
                         setCategories(response.result);
                         if (!isEmpty(response.result)) {
                             setCategory(response.result[0]);
                         }
                     }
-                    dispatch(setLoading(false));
                 })
                 .catch((error) => {
                     dispatch(setLoading(false));
@@ -136,7 +139,7 @@ export default Detail = (props) => {
                 })
         }
 
-        setTimeout(() => getInformation(), 500);
+        getInformation();
 
         return () => console.log('Unmounted');
     }, []);
@@ -145,6 +148,7 @@ export default Detail = (props) => {
         dispatch(setLoading(true));
         FoodService.subCategories(country, restaurant.restaurant_id, category.category_id)
             .then(async (response) => {
+                dispatch(setLoading(false));
                 if (response.status == 200) {
                     setSubCategories(response.result);
                     if (!isEmpty(response.result)) {
@@ -157,7 +161,6 @@ export default Detail = (props) => {
                         }
                     }
                 }
-                dispatch(setLoading(false));
             })
             .catch((error) => {
                 dispatch(setLoading(false));
@@ -165,21 +168,13 @@ export default Detail = (props) => {
     }, [category]);
 
     useEffect(() => {
-        dispatch(setLoading(true));
-        FoodService.products(country, restaurant.restaurant_id, category.category_id, subCategory.subcategoryId, subCategory.propertyValTransId, search)
-            .then(async (response) => {
-                if (response.status == 200) {
-                    setProducts(response.result);
-                } else {
-                    setProducts([]);
-                }
-                dispatch(setLoading(false));
-            })
-            .catch((error) => {
-                setProducts([]);
-                dispatch(setLoading(false));
-            });
-    }, [subCategory]);
+        if (first) {
+            setVisible(true);
+            setTimeout(() => setVisible(false), 2000);
+        } else {
+            setFirst(true);
+        }
+    }, [cartToast]);
 
     return (
         <SafeAreaView style={styles.saveArea}>
@@ -201,18 +196,19 @@ export default Detail = (props) => {
                         switch (route.key) {
                             case 'menu':
                                 return <Menu
+                                    jumpTo={jumpTo}
+                                    restaurant={restaurant}
                                     categories={categories}
                                     category={category}
                                     subCategories={subCategories}
                                     subCategory={subCategory}
                                     search={search}
-                                    products={products}
-                                    onMinus={(value) => alert('Minus')}
-                                    onPlus={(value) => alert('Plus')}
                                     onCategory={(value) => setCategory(value)}
                                     onSubCategory={(value) => setSubCategory(value)}
                                     onSearch={(value) => setSearch(value)}
-                                    jumpTo={jumpTo} />;
+                                    onExtra={(product, count) => props.navigation.push('Extra', { restaurant, product, count })}
+                                    onModal={() => setModal(true)}
+                                />;
                             case 'info':
                                 return <Information information={information} jumpTo={jumpTo} />;
                             case 'third':
@@ -269,12 +265,55 @@ export default Detail = (props) => {
                         </Animated.View>
                     </Animated.View>
                     <View style={common.headerRight}>
-                        <TouchableOpacity >
-                            <CartWhiteIcon />
+                        <TouchableOpacity onPress={() => {
+                            dispatch(setCartBadge(0));
+                            props.navigation.navigate('Order');
+                        }}>
+                            {cartBadge > 0 ? (
+                                <Fragment>
+                                    <CartYellowIcon />
+                                    <View style={styles.badge}>
+                                        <Text style={styles.badgeText}>{cartBadge}</Text>
+                                    </View>
+                                </Fragment>
+                            ) : (
+                                    <Fragment>
+                                        <CartWhiteIcon />
+                                        <View style={styles.badgeEmpty} />
+                                    </Fragment>
+                                )}
                         </TouchableOpacity>
                     </View>
                 </Header>
             </Animated.View>
+            {visible && (
+                <View style={styles.toast}>
+                    <CheckIcon />
+                    <Text style={styles.toastText}>{i18n.translate('Product in the cart')}</Text>
+                </View>
+            )}
+            {modal && (
+                <View style={styles.modalContainer}>
+                    <View style={styles.overlay} />
+                    <View style={styles.modalView}>
+                        <View style={styles.modalMain}>
+                            <Text style={styles.modalTitle}>{i18n.translate('You havent placed your order from the')} {restaurant.restaurant_name} {i18n.translate('yet')}</Text>
+                            <Text style={styles.modalDescription}>{i18n.translate('An order can only be from one restaurant')}</Text>
+                        </View>
+                        <TouchableOpacity style={styles.modalButton} onPress={() => setModal(false)}>
+                            <Text style={styles.saveText}>{i18n.translate('Back to the')} {restaurant.restaurant_name} {i18n.translate('restaurant')}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.modalButton} onPress={() => {
+                            setModal(false);
+                            // dispatch(setCartRestaurant(null));
+                            dispatch(setCartProducts([]));
+                        }}>
+                            <Text style={styles.cancelText}>{i18n.translate('Empty cart add new product to the cart')}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            )}
+
         </SafeAreaView>
     );
 }
@@ -444,5 +483,114 @@ const styles = StyleSheet.create({
     tabLabel: {
         fontSize: 14,
         fontWeight: 'bold'
+    },
+    badge: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 16,
+        height: 16,
+        borderRadius: 8,
+        borderWidth: 2,
+        borderColor: '#FEEBD6',
+        backgroundColor: colors.YELLOW.PRIMARY,
+        marginTop: -30,
+        marginLeft: 15
+    },
+    badgeEmpty: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 16,
+        height: 16,
+        marginTop: -30,
+        marginLeft: 15
+    },
+    badgeText: {
+        fontSize: 10,
+        fontWeight: 'bold',
+        color: colors.WHITE
+    },
+    toast: {
+        position: 'absolute',
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        bottom: 0,
+        paddingLeft: 50,
+        width: wp('100%'),
+        height: 60,
+        backgroundColor: '#FEEBD6',
+        shadowColor: colors.BLACK,
+        shadowOffset: { width: 4, height: 10 },
+        shadowOpacity: 0.5,
+        shadowRadius: 10,
+        elevation: 10
+    },
+    toastText: {
+        marginLeft: 20,
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#F78F1E'
+    },
+    modalContainer: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: wp('100%'),
+        height: hp('100%'),
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    overlay: {
+        position: 'absolute',
+        width: wp('100%'),
+        height: hp('100%'),
+        backgroundColor: '#00000080'
+    },
+    modalView: {
+        justifyContent: 'space-between',
+        width: wp('70%'),
+        height: 230,
+        backgroundColor: '#1E1E1E',
+        borderRadius: 14,
+    },
+    modalMain: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 120
+    },
+    modalTitle: {
+        width: '80%',
+        textAlign: 'center',
+        fontSize: 17,
+        fontWeight: 'bold',
+        color: colors.WHITE
+    },
+    modalDescription: {
+        width: '80%',
+        textAlign: 'center',
+        fontSize: 13,
+        color: colors.WHITE
+    },
+    modalButton: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        height: 55,
+        borderTopWidth: 2,
+        borderTopColor: colors.BLACK
+    },
+    saveText: {
+        width: '80%',
+        fontSize: 17,
+        fontWeight: 'bold',
+        color: '#0AB4FF',
+        textAlign: 'center'
+    },
+    cancelText: {
+        width: '80%',
+        fontSize: 17,
+        fontWeight: 'bold',
+        color: '#F05050',
+        textAlign: 'center'
     },
 });

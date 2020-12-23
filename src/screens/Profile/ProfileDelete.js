@@ -65,7 +65,7 @@ export default ProfileDelete = (props) => {
             </Header>
             <Content style={styles.content}>
                 <Card key='review' style={styles.card}>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={common.flexRow}>
                         <Text style={styles.labelText}>{i18n.translate('Reason')}</Text>
                         <Text style={styles.labelTextNormal}> ({i18n.translate('Optional')})</Text>
                     </View>

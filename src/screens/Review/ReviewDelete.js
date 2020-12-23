@@ -62,7 +62,7 @@ export default ReviewDelete = (props) => {
                 <Text style={styles.reviewText}>{review.restaurant_name}</Text>
 
                 <Card key='review' style={styles.card}>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={common.flexRow}>
                         <Text style={styles.labelText}>{i18n.translate('Reason')}</Text>
                         <Text style={styles.labelTextNormal}> ({i18n.translate('Optional')})</Text>
                     </View>

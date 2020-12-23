@@ -88,8 +88,8 @@ export default SignUp = (props) => {
                 {!isEmpty(errorMsg) && (
                     <View style={common.errorContainer}>
                         <ErrorIcon />
-                        <Text style={{ fontWeight: 'bold', color: '#F05050' }}>{errorMsg}</Text>
-                        <View style={{ width: 30 }} />
+                        <Text style={common.iconText}>{errorMsg}</Text>
+                        <View style={common.width30} />
                     </View>
                 )}
                 <View style={styles.inputView}>
@@ -197,7 +197,7 @@ export default SignUp = (props) => {
                         type='material-community'
                         name={newsLetter ? 'check-box-outline' : 'checkbox-blank-outline'}
                         size={25}
-                        color={newsLetter ? colors.YELLOW.PRIMARY :colors.GREY.PRIMARY}
+                        color={newsLetter ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY}
                     />
                     <Text style={styles.rememberText}>{i18n.translate('I subscribe to the newsletter')}</Text>
                 </TouchableOpacity>

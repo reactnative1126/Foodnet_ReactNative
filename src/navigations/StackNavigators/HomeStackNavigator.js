@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 
-import { Home, Detail } from '@screens';
+import { Home, Detail, Extra } from '@screens';
 import { navOptionHandler } from '@utils/functions';
 
 const StackHome = createStackNavigator();
@@ -11,6 +11,7 @@ export default HomeStack = () => {
       screenOptions={{...TransitionPresets.SlideFromRightIOS}}>
       <StackHome.Screen name='Home' component={Home} options={navOptionHandler} />
       <StackHome.Screen name='Detail' component={Detail} options={navOptionHandler} />
+      <StackHome.Screen name='Extra' component={Extra} options={navOptionHandler} />
     </StackHome.Navigator>
   )
 }

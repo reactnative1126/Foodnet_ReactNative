@@ -85,11 +85,11 @@ export default ProfilePassword = (props) => {
                     <View style={common.errorContainer}>
                         <ErrorIcon />
                         <Text style={{ fontWeight: 'bold', color: '#F05050' }}>{errorMsg}</Text>
-                        <View style={{ width: 30 }} />
+                        <View style={common.width30} />
                     </View>
                 )}
                 <View style={[styles.inputView, common.marginTop25]}>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={common.flexRow}>
                         <Text style={[styles.labelText, !isEmpty(errorOldPassword) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Old password')}</Text>
                         <Text style={[styles.labelTextNormal, !isEmpty(errorOldPassword) ? common.fontColorRed : common.fontColorBlack]}> ({i18n.translate('Required')})</Text>
                     </View>
@@ -118,7 +118,7 @@ export default ProfilePassword = (props) => {
                     <Text style={common.errorText}>{errorOldPassword}</Text>
                 </View>
                 <View style={[styles.inputView, common.marginTop25]}>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={common.flexRow}>
                         <Text style={[styles.labelText, !isEmpty(errorNewPassword) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('New password')}</Text>
                         <Text style={[styles.labelTextNormal, !isEmpty(errorNewPassword) ? common.fontColorRed : common.fontColorBlack]}> ({i18n.translate('Required')})</Text>
                     </View>
@@ -147,7 +147,7 @@ export default ProfilePassword = (props) => {
                     <Text style={common.errorText}>{errorNewPassword}</Text>
                 </View>
                 <View style={[styles.inputView, common.marginTop25]}>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={common.flexRow}>
                         <Text style={[styles.labelText, !isEmpty(errorConfirmPassword) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('New password again')}</Text>
                         <Text style={[styles.labelTextNormal, !isEmpty(errorConfirmPassword) ? common.fontColorRed : common.fontColorBlack]}> ({i18n.translate('Required')})</Text>
                     </View>

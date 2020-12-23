@@ -68,7 +68,7 @@ const GoogleIcon = ({ style }) => (
     </View>
 );
 
-const InboxIcon = ({ style }) => (
+const CartYellowIcon = ({ style }) => (
     <View style={style}>
         <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/Svg">
             <Path d="M6 2L3 6V20C3 20.5304 3.21071 21.0391 3.58579 21.4142C3.96086 21.7893 4.46957 22 5 22H19C19.5304 22 20.0391 21.7893 20.4142 21.4142C20.7893 21.0391 21 20.5304 21 20V6L18 2H6Z" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -259,7 +259,6 @@ const TrustIcon = ({ style }) => (
                 </ClipPath>
             </Defs>
         </Svg>
-
     </View>
 );
 
@@ -270,8 +269,15 @@ const GoBackIcon = ({ style }) => (
                 <Path id="icon/content/reply_24px" d="M10 8.5V4.5L3 11.5L10 18.5V14.4C15 14.4 18.5 16 21 19.5C20 14.5 17 9.5 10 8.5Z" fill="#F78F1E" />
             </G>
         </Svg>
-
     </View>
+);
+
+const CheckIcon = ({ style }) => (
+    <Svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/Svg">
+        <Path d="M22.9167 11.5414V12.4998C22.9154 14.7461 22.1881 16.9317 20.8431 18.7308C19.4981 20.53 17.6076 21.8461 15.4535 22.483C13.2994 23.1199 10.9972 23.0434 8.89011 22.265C6.78304 21.4865 4.98406 20.0478 3.76146 18.1634C2.53886 16.279 1.95816 14.0498 2.10595 11.8084C2.25375 9.56703 3.12213 7.43345 4.58158 5.72589C6.04103 4.01834 8.01336 2.8283 10.2044 2.33326C12.3955 1.83823 14.6878 2.06471 16.7396 2.97894" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <Path d="M22.9167 4.16699L12.5 14.5941L9.375 11.4691" stroke="#F78F1E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+
 );
 
 export {
@@ -279,7 +285,6 @@ export {
     LogoIcon,
     BackIcon,
     GoogleIcon,
-    InboxIcon,
     OrderIcon,
     ProfileIcon,
     CouponIcon,
@@ -293,10 +298,12 @@ export {
     FilterIcon,
     RemoveIcon,
     BackWhiteIcon,
+    CartYellowIcon,
     CartWhiteIcon,
     StarYellowIcon,
     StarGreyIcon,
     SuccessIcon,
     TrustIcon,
-    GoBackIcon
+    GoBackIcon,
+    CheckIcon
 }

@@ -123,7 +123,7 @@ export default ReviewAdd = (props) => {
                                 type='material-community'
                                 name={accept ? 'check-box-outline' : 'checkbox-blank-outline'}
                                 size={25}
-                                color={accept ? colors.YELLOW.PRIMARY :colors.GREY.PRIMARY}
+                                color={accept ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY}
                             />
                             <Text style={styles.rememberText}>{i18n.translate('I accept the ')}
                                 <Text style={[styles.rememberText, common.fontColorYellow, common.underLine]} onPress={() => alert('OK')}>{i18n.translate('GTC')}</Text>
@@ -135,7 +135,7 @@ export default ReviewAdd = (props) => {
                                 type='material-community'
                                 name={agree ? 'check-box-outline' : 'checkbox-blank-outline'}
                                 size={25}
-                                color={agree ? colors.YELLOW.PRIMARY :colors.GREY.PRIMARY}
+                                color={agree ? colors.YELLOW.PRIMARY : colors.GREY.PRIMARY}
                             />
                             <Text style={styles.rememberText}>{i18n.translate('I agree that my review may appear on ')}
                                 <Text style={[styles.rememberText, common.fontColorYellow, common.underLine]} onPress={() => alert('OK')}>foodnet.ro</Text>

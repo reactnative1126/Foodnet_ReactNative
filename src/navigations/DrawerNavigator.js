@@ -7,13 +7,15 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeStack from '@navigations/StackNavigators/HomeStackNavigator';
 import ProfileStack from '@navigations/StackNavigators/ProfileStackNavigator';
 import DeliveryStack from '@navigations/StackNavigators/DeliveryStackNavigator';
+import OrderStack from '@navigations/StackNavigators/OrderStackNavigator';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
 import { deleteUser } from '@modules/reducers/auth/actions';
+import { setCartBadge } from '@modules/reducers/food/actions';
 import { isEmpty, navOptionHandler } from '@utils/functions';
 import { common, colors } from '@constants/themes';
-import { InboxIcon, OrderIcon, ProfileIcon, LocationIcon, LanguageIcon, ServiceIcon, GoBackIcon } from '@constants/svgs';
+import { CartYellowIcon, OrderIcon, ProfileIcon, LocationIcon, LanguageIcon, ServiceIcon, GoBackIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
 const Drawer = createDrawerNavigator();
@@ -31,6 +33,11 @@ export default DrawerNavigator = () => {
                 animationEnabled: false,
                 swipeEnabled: false
             }} />
+            <Drawer.Screen name="Order" component={OrderStack} options={{
+                headerShown: false,
+                animationEnabled: false,
+                swipeEnabled: false
+            }} />
         </Drawer.Navigator>
     )
 }
@@ -38,6 +45,7 @@ export default DrawerNavigator = () => {
 const DrawerContent = (props) => {
     const dispatch = useDispatch();
     const { logged, user } = useSelector(state => state.auth);
+    const { cartBadge } = useSelector(state => state.food);
 
     const onLogout = () => {
         dispatch(deleteUser({
@@ -65,8 +73,23 @@ const DrawerContent = (props) => {
                     <Text style={common.headerTitleText}>{i18n.translate('Home')}</Text>
                 </View>
                 <View style={common.headerRight}>
-                    <TouchableOpacity onPress={() => alert('Inbox')}>
-                        <InboxIcon />
+                    <TouchableOpacity onPress={() => {
+                        dispatch(setCartBadge(0));
+                        props.navigation.navigate('Order');
+                    }}>
+                        {cartBadge > 0 ? (
+                            <Fragment>
+                                <CartYellowIcon />
+                                <View style={styles.badge}>
+                                    <Text style={styles.badgeText}>{cartBadge}</Text>
+                                </View>
+                            </Fragment>
+                        ) : (
+                                <Fragment>
+                                    <CartYellowIcon />
+                                    <View style={styles.badgeEmpty} />
+                                </Fragment>
+                            )}
                     </TouchableOpacity>
                 </View>
             </Header>
@@ -153,5 +176,30 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '400',
         color: '#111'
-    }
+    },
+    badge: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 16,
+        height: 16,
+        borderRadius: 8,
+        borderWidth: 2,
+        borderColor: '#FEEBD6',
+        backgroundColor: colors.YELLOW.PRIMARY,
+        marginTop: -30,
+        marginLeft: 15
+    },
+    badgeEmpty: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 16,
+        height: 16,
+        marginTop: -30,
+        marginLeft: 15
+    },
+    badgeText: {
+        fontSize: 10,
+        fontWeight: 'bold',
+        color: colors.WHITE
+    },
 });

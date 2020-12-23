@@ -7,7 +7,6 @@ import { Icon } from 'react-native-elements';
 import Card from '../Athena/Card';
 import { isEmpty } from '@utils/functions';
 import { common, colors } from '@constants/themes';
-import { images, icons } from '@constants/assets';
 import { RemoveIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 

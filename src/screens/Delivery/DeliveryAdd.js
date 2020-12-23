@@ -46,7 +46,7 @@ export default DeliveryAdd = (props) => {
                     dispatch(setLoading(false));
                     if (response.status == 200) {
                         setCitys(response.locations);
-                        if(props.route.params.type === 2){
+                        if (props.route.params.type === 2) {
                             var selectedCity = response.locations.filter(checkCity);
                             setCityObj(selectedCity[0]);
                         }
@@ -106,7 +106,7 @@ export default DeliveryAdd = (props) => {
             </Header>
             <View style={styles.content}>
                 <View style={styles.selectView}>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={common.flexRow}>
                         <Text style={[styles.labelText, !isEmpty(errorCity) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Settlement')}</Text>
                         <Text style={[styles.labelTextNormal, !isEmpty(errorCity) ? common.fontColorRed : common.fontColorBlack]}> ({i18n.translate('Required')})</Text>
                     </View>
@@ -131,7 +131,7 @@ export default DeliveryAdd = (props) => {
                 ) : (
                         <Fragment>
                             <View style={styles.streetView}>
-                                <View style={{ flexDirection: 'row' }}>
+                                <View style={common.flexRow}>
                                     <Text style={[styles.labelText, !isEmpty(errorStreet) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Street')}</Text>
                                     <Text style={[styles.labelTextNormal, !isEmpty(errorStreet) ? common.fontColorRed : common.fontColorBlack]}> ({i18n.translate('Required')})</Text>
                                 </View>

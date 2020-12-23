@@ -83,11 +83,11 @@ export default ProfileEdit = (props) => {
                     <View style={common.errorContainer}>
                         <ErrorIcon />
                         <Text style={{ fontWeight: 'bold', color: '#F05050' }}>{errorMsg}</Text>
-                        <View style={{ width: 30 }} />
+                        <View style={common.width30} />
                     </View>
                 )}
                 <View style={styles.inputView}>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={common.flexRow}>
                         <Text style={[styles.labelText, !isEmpty(errorName) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Name')}</Text>
                         <Text style={[styles.labelTextNormal, !isEmpty(errorName) ? common.fontColorRed : common.fontColorBlack]}> ({i18n.translate('Required')})</Text>
                     </View>
@@ -107,7 +107,7 @@ export default ProfileEdit = (props) => {
                     <Text style={common.errorText}>{errorName}</Text>
                 </View>
                 <View style={[styles.inputView, common.marginTop35]}>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={common.flexRow}>
                         <Text style={[styles.labelText, !isEmpty(errorEmail) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('E-mail address')}</Text>
                         <Text style={[styles.labelTextNormal, !isEmpty(errorEmail) ? common.fontColorRed : common.fontColorBlack]}> ({i18n.translate('Required')})</Text>
                     </View>
@@ -128,7 +128,7 @@ export default ProfileEdit = (props) => {
                     <Text style={common.errorText}>{errorEmail}</Text>
                 </View>
                 <View style={[styles.inputView, common.marginTop35]}>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={common.flexRow}>
                         <Text style={[styles.labelText, !isEmpty(errorMobile) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Phone number')}</Text>
                         <Text style={[styles.labelTextNormal, !isEmpty(errorMobile) ? common.fontColorRed : common.fontColorBlack]}> ({i18n.translate('Required')})</Text>
                     </View>
