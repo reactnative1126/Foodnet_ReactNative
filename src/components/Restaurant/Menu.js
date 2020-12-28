@@ -5,6 +5,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { Icon } from 'react-native-elements';
 import Card from '../Athena/Card';
 import { setLoading } from '@modules/reducers/auth/actions';
+import { setCartProducts } from '@modules/reducers/food/actions';
 import { FoodService } from '@modules/services';
 import { isEmpty } from '@utils/functions';
 import { common, colors } from '@constants/themes';
@@ -12,16 +13,21 @@ import { RES_URL } from '@constants/configs';
 import { CartWhiteIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
+import moment from 'moment';
 import { TextField } from 'react-native-material-textfield';
 import FastImage from 'react-native-fast-image';
 import ContentLoader from 'react-native-easy-content-loader';
 
-const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onExtra, onModal }) => {
+const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onExtra, onModal, onCart }) => {
     const [loader, setLoader] = useState(true);
     const [count, setCount] = useState(1);
     const [flag, setFlag] = useState(false);
 
     useEffect(() => {
+        // console.log('1--', moment(product.startTime).format('MM/DD/YYYY, h:mm:ss A'))
+        // console.log('2--', moment().format('MM/DD/YYYY, h:mm:ss A'))
+        // console.log('3--', moment(product.endTime).format('MM/DD/YYYY, h:mm:ss A'))
+        // console.log('4--', product.soldOut)
         var index = cartProducts.findIndex((cartProduct) => {
             return cartRestaurant.restaurant_id == restaurant.restaurant_id && cartProduct.productId == product.product_id && cartProduct.variantId == product.variant_id
         });
@@ -43,16 +49,51 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
                 containerStyles={styles.loader}
             />
             <View key={index} style={loader ? styles.default : styles.product}>
+                {(
+                    (!isEmpty(product.startTime) && moment(product.startTime).format('MM/DD/YYYY, h:mm:ss A') > moment().format('MM/DD/YYYY, h:mm:ss A')) ||
+                    (!isEmpty(product.endTime) && moment().format('MM/DD/YYYY, h:mm:ss A') > moment(product.endTime).format('MM/DD/YYYY, h:mm:ss A')) ||
+                    product.soldOut == 1
+                ) && (
+                        <View style={styles.overlay} />
+                    )}
                 <FastImage style={styles.productImage} source={{ uri: RES_URL + product.product_imageUrl }} resizeMode='cover' onLoadEnd={e => setLoader(false)} />
                 <Text style={styles.productTitle} numberOfLines={1}>{product.product_name}</Text>
-                <Text style={styles.productDescription}>{product.product_description}</Text>
-                {!isEmpty(product.allergens_name) ? (
+                {isEmpty(product.soldOut) && (
+                    <Text style={styles.productDescription}>{product.product_description}</Text>
+                )}
+                {isEmpty(product.soldOut) && !isEmpty(product.allergens_name) ? (
                     <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {product.allergens_name.map((allergen, key) => (
                         <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != product.allergens_name.length - 1 ? ', ' : ''}</Text>
                     ))})</Text>
                 ) : null}
+                {!isEmpty(product.soldOut) && (
+                    <View style={styles.dailyWrapper}>
+                        <Text style={styles.extrasText} numberOfLines={1}><Text style={{ fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Soup')}: </Text>{'Product name'}</Text>
+                        {!isEmpty(product.allergens_name) ? (
+                            <Text style={[styles.allergenList, { marginTop: 0 }]}>({i18n.translate('Allergens')}: {product.allergens_name.map((allergen, key) => (
+                                <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != product.allergens_name.length - 1 ? ', ' : ''}</Text>
+                            ))})</Text>
+                        ) : null}
+                        <View style={{ height: 20 }} />
+                        <Text style={styles.extrasText} numberOfLines={1}><Text style={{ fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Main course')}: </Text>{'Product name'}</Text>
+                        {!isEmpty(product.allergens_name) ? (
+                            <Text style={[styles.allergenList, { marginTop: 0 }]}>({i18n.translate('Allergens')}: {product.allergens_name.map((allergen, key) => (
+                                <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != product.allergens_name.length - 1 ? ', ' : ''}</Text>
+                            ))})</Text>
+                        ) : null}
+                        <View style={{ height: 20 }} />
+                        <Text style={styles.extrasText} numberOfLines={1}><Text style={{ fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Dessert')}: </Text>{'Product name'}</Text>
+                        {!isEmpty(product.allergens_name) ? (
+                            <Text style={[styles.allergenList, { marginTop: 0 }]}>({i18n.translate('Allergens')}: {product.allergens_name.map((allergen, key) => (
+                                <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != product.allergens_name.length - 1 ? ', ' : ''}</Text>
+                            ))})</Text>
+                        ) : null}
+                        <View style={{ height: 20 }} />
+                        <Text style={styles.extrasText} numberOfLines={1}><Text style={{ fontWeight: 'bold' }} numberOfLines={1}>{i18n.translate('Available')}: </Text>{product.startTime.split(', ')[1]}-{product.endTime.split(', ')[1]}</Text>
+                    </View>
+                )}
                 <View style={styles.productCart}>
-                    <Text style={styles.price}>{product.product_price} Ft</Text>
+                    <Text style={styles.price}>{product.product_price} {i18n.translate('lei')}</Text>
                     <View style={styles.cart}>
                         <TouchableOpacity style={styles.countButton1} disabled={count == 1 || flag} onPress={() => count > 1 && setCount(count - 1)}>
                             <Icon type='material-community' name='minus' color='#333' size={25} />
@@ -64,11 +105,11 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
                             <Icon type='material-community' name='plus' color='#333' size={25} />
                         </TouchableOpacity>
                         <View style={{ width: 10 }} />
-                        <TouchableOpacity style={styles.check} disabled={flag} onPress={() => {
+                        <TouchableOpacity style={styles.check} onPress={() => {
                             if (!isEmpty(cartProducts) && cartRestaurant.restaurant_id != restaurant.restaurant_id) {
                                 onModal();
                             } else {
-                                onExtra(product, count);
+                                flag ? onCart() : onExtra(product, count);
                             }
                         }}>
                             {flag ? (<Icon type='material' name='check' color={colors.WHITE} size={25} />) : (<CartWhiteIcon />)}
@@ -98,6 +139,7 @@ export default Menu = (props) => {
                 if (response.status == 200) {
                     setProducts(response.result);
                 } else {
+                    // dispatch(setLoading(false));
                     setProducts([]);
                 }
             })
@@ -176,6 +218,7 @@ export default Menu = (props) => {
                                     product={product.item}
                                     index={index}
                                     onExtra={props.onExtra}
+                                    onCart={props.onCart}
                                     onModal={props.onModal}
                                 />
                             )}
@@ -339,5 +382,23 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 4,
         borderWidth: 1,
         borderColor: '#C4C4C4'
+    },
+    dailyWrapper: {
+        marginTop: 10,
+        width: '100%'
+    },
+    extrasText: {
+        width: '100%',
+        fontSize: 16,
+        color: '#333'
+    },
+    overlay: {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        top: 16,
+        left: 16,
+        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+        zIndex: 2000
     }
 });

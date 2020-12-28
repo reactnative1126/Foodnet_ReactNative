@@ -53,7 +53,7 @@ const RenderOne = ({ cart, restaurant, product, index, onExtra }) => {
                     ))})</Text>
                 ) : null}
                 <View style={styles.productCart}>
-                    <Text style={styles.price}>{product.product_price} Ft</Text>
+                    <Text style={styles.price}>{product.product_price} {i18n.translate('lei')}</Text>
                     <View style={styles.cart}>
                         <TouchableOpacity style={styles.countButton1} disabled={count == 1 || flag} onPress={() => count > 1 && setCount(count - 1)}>
                             <Icon type='material-community' name='minus' color='#333' size={25} />

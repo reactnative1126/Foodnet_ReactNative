@@ -12,7 +12,6 @@ import OrderStack from '@navigations/StackNavigators/OrderStackNavigator';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
 import { deleteUser } from '@modules/reducers/auth/actions';
-import { setCartBadge } from '@modules/reducers/food/actions';
 import { isEmpty, navOptionHandler } from '@utils/functions';
 import { common, colors } from '@constants/themes';
 import { CartYellowIcon, OrderIcon, ProfileIcon, LocationIcon, LanguageIcon, ServiceIcon, GoBackIcon } from '@constants/svgs';
@@ -74,7 +73,6 @@ const DrawerContent = (props) => {
                 </View>
                 <View style={common.headerRight}>
                     <TouchableOpacity onPress={() => {
-                        dispatch(setCartBadge(0));
                         props.navigation.navigate('Order');
                     }}>
                         {cartBadge > 0 ? (

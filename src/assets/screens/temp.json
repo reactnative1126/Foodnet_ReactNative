@@ -113,3 +113,199 @@
         }
     }
 ]
+
+{
+    "status": 200,
+    "msg": "Products list successfully listed",
+    "result": [
+        {
+            "product_id": 9,
+            "variant_id": 9,
+            "product_name": "Daily Menu -vega +",
+            "product_description": "Daily Menu -vega + description en",
+            "product_price": 17.99,
+            "product_imageUrl": "images/2020-12-22T20:11:19.655Z-hamburger.jpg",
+            "allergens_name": [
+                {
+                    "allergen_name": "Crustaceans"
+                }
+            ]
+        },
+        {
+            "product_id": 11,
+            "variant_id": 11,
+            "box_id": 1,
+            "box_price": 1.5,
+            "box_name": "Small",
+            "product_name": "napi menu +++",
+            "product_description": "napi menu +++",
+            "product_price": 22.99,
+            "product_imageUrl": "images/2020-12-23T09:07:33.574Z-18353558-377f-11ea-aa49-0a5864709f2b_shutterstock_1340313734.jpg",
+            "allergens_name": [
+                {
+                    "allergen_name": "Gluten"
+                },
+                {
+                    "allergen_name": "Crustaceans"
+                }
+            ]
+        }
+    ]
+}
+
+{
+    "status": 200,
+    "msg": "Products list successfully listed",
+    "result": [
+        {
+            "product_id": 9,
+            "variant_id": 9,
+            "product_name": "Daily Menu -vega +",
+            "product_description": "Daily Menu -vega + description en",
+            "product_price": 17.99,
+            "product_imageUrl": "images/2020-12-22T20:11:19.655Z-hamburger.jpg",
+            "startTime": "12/22/2020, 7:41:31 PM",
+            "endTime": "12/22/2020, 7:41:31 PM",
+            "soldOut": 1,
+            "allergens_name": [
+                {
+                    "allergen_name": "Crustaceans"
+                }
+            ]
+        },
+        {
+            "product_id": 11,
+            "variant_id": 11,
+            "box_id": 1,
+            "box_price": 1.5,
+            "box_name": "Small",
+            "product_name": "napi menu +++",
+            "product_description": "napi menu +++",
+            "product_price": 22.99,
+            "product_imageUrl": "images/2020-12-23T09:07:33.574Z-18353558-377f-11ea-aa49-0a5864709f2b_shutterstock_1340313734.jpg",
+            "startTime": "12/22/2020, 7:41:31 PM",
+            "endTime": "12/22/2020, 7:41:31 PM",
+            "soldOut": 1,
+            "allergens_name": [
+                {
+                    "allergen_name": "Gluten"
+                },
+                {
+                    "allergen_name": "Crustaceans"
+                }
+            ]
+        }
+    ]
+}
+
+[Wed Dec 23 2020 14: 10: 50.884
+]  LOG      {
+    "status": 200,
+    "msg": "Products list successfully listed",
+    "result": [
+        {
+            "product_id": 4,
+            "variant_id": 4,
+            "product_name": "Chicken Hamburger",
+            "product_description": "Chicken Hamburger description en",
+            "product_price": 22.99,
+            "product_imageUrl": "images/2020-12-22T19:42:20.466Z-hamburger.jpg",
+            "allergens_name": [
+                {
+                    "allergen_name": "Gluten"
+                },
+                {
+                    "allergen_name": "Crustaceans"
+                }
+            ]
+        }
+    ]
+}
+[Wed Dec 23 2020 14: 10: 55.200
+]  LOG      {
+    "status": 200,
+    "msg": "Products list successfully listed",
+    "result": [
+        {
+            "product_id": 3,
+            "variant_id": 3,
+            "box_id": 1,
+            "box_price": 1.5,
+            "box_name": "Small",
+            "product_name": "Pizza Proscuito",
+            "product_description": "Pizza Proscuito description en",
+            "product_price": 18.99,
+            "product_imageUrl": "images/2020-12-22T19:41:31.919Z-americana.jpg",
+            "allergens_name": [
+                {
+                    "allergen_name": "Gluten"
+                }
+            ]
+        },
+        {
+            "product_id": 12,
+            "variant_id": 12,
+            "product_name": "Mama Mia",
+            "product_description": "Mama Mia",
+            "product_price": 22,
+            "product_imageUrl": "images/2020-12-23T09:18:15.135Z-americana.jpg",
+            "allergens_name": [
+                {
+                    "allergen_name": "Gluten"
+                },
+                {
+                    "allergen_name": "Egg"
+                },
+                {
+                    "allergen_name": "Fish"
+                }
+            ]
+        }
+    ]
+}
+
+{
+    "status": 200,
+    "msg": "Products list successfully listed",
+    "result": [
+        {
+            "daily_"
+            "product_id": 9,
+            "variant_id": 9,
+            "product_name": "Daily Menu -vega +",
+            "product_description": "Daily Menu -vega + description en",
+            "product_price": 17.99,
+            "product_imageUrl": "images/2020-12-22T20:11:19.655Z-hamburger.jpg",
+            "startTime": "12/22/2020, 9:41:31 AM",
+            "endTime": "12/22/2020, 7:41:31 PM",
+            "soldOut": 1,
+            "allergens_name": [
+                {
+                    "allergen_name": "Crustaceans"
+                }
+            ]
+        },
+        {
+            "product_id": 11,
+            "variant_id": 11,
+            "box_id": 1,
+            "box_price": 1.5,
+            "box_name": "Small",
+            "product_name": "napi menu +++",
+            "product_description": "napi menu +++",
+            "product_price": 22.99,
+            "product_imageUrl": "images/2020-12-23T09:07:33.574Z-18353558-377f-11ea-aa49-0a5864709f2b_shutterstock_1340313734.jpg",
+            "startTime": "12/22/2020, 8:41:31 AM",
+            "endTime": "12/22/2020, 12:41:31 PM",
+            "soldOut": 1,
+            "allergens_name": [
+                {
+                    "allergen_name": "Gluten"
+                },
+                {
+                    "allergen_name": "Crustaceans"
+                }
+            ]
+        }
+    ]
+}

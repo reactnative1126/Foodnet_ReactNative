@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Header } from 'native-base';
 import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
@@ -9,12 +9,13 @@ import { setFilters } from '@modules/reducers/food/actions';
 import { FoodService } from '@modules/services';
 import { Cities, Dashboard, Filters } from '@components';
 import { common, colors } from '@constants/themes';
+import { CartYellowIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
 export default Home = (props) => {
     const dispatch = useDispatch();
     const { logged, country, city, user } = useSelector(state => state.auth);
-    const { filters } = useSelector(state => state.food);
+    const { cartBadge, filters } = useSelector(state => state.food);
 
     const [cityStatus, setCityStatus] = useState(false);
     const [filterStatus, setFilterStatus] = useState(false);
@@ -36,7 +37,6 @@ export default Home = (props) => {
                 }
             })
             .catch((error) => {
-                dispatch(setLoading(false));
                 setRefresh(false);
             });
         FoodService.popular(country, logged ? user.city.name : city.name)
@@ -47,7 +47,6 @@ export default Home = (props) => {
                 }
             })
             .catch((error) => {
-                dispatch(setLoading(false));
                 setRefresh(false);
             });
         FoodService.all(country, logged ? user.city.name : city.name, search, filters)
@@ -93,7 +92,25 @@ export default Home = (props) => {
                     <Text style={common.headerTitleText}>{!logged ? city.name : user.city.name}</Text>
                     <Icon type='material' name={cityStatus ? 'keyboard-arrow-up' : 'keyboard-arrow-down'} size={20} color={colors.BLACK} />
                 </TouchableOpacity>
-                <View style={common.headerRight} />
+                <View style={common.headerRight}>
+                    <TouchableOpacity onPress={() => {
+                        props.navigation.navigate('Order');
+                    }}>
+                        {cartBadge > 0 ? (
+                            <Fragment>
+                                <CartYellowIcon />
+                                <View style={styles.badge}>
+                                    <Text style={styles.badgeText}>{cartBadge}</Text>
+                                </View>
+                            </Fragment>
+                        ) : (
+                                <Fragment>
+                                    <CartYellowIcon />
+                                    <View style={styles.badgeEmpty} />
+                                </Fragment>
+                            )}
+                    </TouchableOpacity>
+                </View>
             </Header>
             {
                 !cityStatus ? !filterStatus ?
@@ -127,5 +144,29 @@ export default Home = (props) => {
 }
 
 const styles = StyleSheet.create({
-
+    badge: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 16,
+        height: 16,
+        borderRadius: 8,
+        borderWidth: 2,
+        borderColor: '#FEEBD6',
+        backgroundColor: colors.YELLOW.PRIMARY,
+        marginTop: -30,
+        marginLeft: 15
+    },
+    badgeEmpty: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 16,
+        height: 16,
+        marginTop: -30,
+        marginLeft: 15
+    },
+    badgeText: {
+        fontSize: 10,
+        fontWeight: 'bold',
+        color: colors.WHITE
+    },
 });

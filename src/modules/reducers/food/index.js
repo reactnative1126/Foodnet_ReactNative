@@ -1,4 +1,5 @@
 import types from './types';
+import { isEmpty } from '@utils/functions';
 
 const initialState = {
     filters: {
@@ -34,12 +35,12 @@ export default function foodReducer(state = initialState, action) {
         case types.SET_CART_PRODUCTS:
             return {
                 ...state,
-                cartProducts: action.payload,
+                cartProducts: isEmpty(action.payload) ? initialState.cartProducts : action.payload,
             };
         case types.SET_CART_BADGE:
             return {
                 ...state,
-                cartBadge: action.payload,
+                cartBadge: isEmpty(action.payload) ? initialState.cartBadge : action.payload,
             };
         case types.SET_CART_TOAST:
             return {

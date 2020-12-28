@@ -1,9 +1,8 @@
-import axios from '@utils/axios';
+import axios, { setClientToken, removeClientToken } from '@utils/axios';
 
 const FoodService = {
     promotion: function (country, cityName) {
         return axios.get(`/location/promotion/${country}/${cityName}`).then((response) => {
-            console.log(response.data)
             return response.data;
         });
     },
@@ -27,7 +26,7 @@ const FoodService = {
             return response.data;
         });
     },
-    
+
     categories: function (country, restaurantId) {
         return axios.post(`/product/category`, {
             restaurantId,
@@ -35,7 +34,7 @@ const FoodService = {
         }).then((response) => {
             return response.data;
         });
-    },    
+    },
     subCategories: function (country, restaurantId, categoryId) {
         return axios.post(`/product/subcategories`, {
             restaurantId,
@@ -44,7 +43,7 @@ const FoodService = {
         }).then((response) => {
             return response.data;
         });
-    }, 
+    },
     products: function (country, restaurantId, categoryId, subcategoryId, propertyValTransId, searchedProduct) {
         return axios.post(`/product/subcategories-products`, {
             restaurantId,
@@ -55,7 +54,7 @@ const FoodService = {
         }).then((response) => {
             return response.data;
         });
-    }, 
+    },
     information: function (country, restaurantName) {
         return axios.get(`/restaurant/info/${country}/${restaurantName}`).then((response) => {
             return response.data;
@@ -75,7 +74,7 @@ const FoodService = {
             restaurantId,
             lang: country,
             variantId
-          }).then((response) => {
+        }).then((response) => {
             return response.data;
         });
     },
@@ -85,27 +84,28 @@ const FoodService = {
             restaurantId,
             lang: country,
             variantId
-          }).then((response) => {
+        }).then((response) => {
             return response.data;
         });
     },
 
-    order: function (deliveryAddressId, restaurantId, take, cutlery, products) {
+    order: function (token, deliveryAddressId, restaurantId, take, cutlery, products) {
         console.log(JSON.stringify({
             deliveryAddressId,
             restaurantId,
             take: take ? 1 : 0,
             cutlery: cutlery ? 1 : 0,
             products
-          }));
+        }))
+        setClientToken(token);
         return axios.post(`/order`, {
             deliveryAddressId,
             restaurantId,
             take: take ? 1 : 0,
             cutlery: cutlery ? 1 : 0,
             products
-          }).then((response) => {
-              console.log(response.data)
+        }).then((response) => {
+            removeClientToken();
             return response.data;
         });
     },

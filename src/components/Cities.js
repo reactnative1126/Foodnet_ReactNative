@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container } from 'native-base';
-import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, Text, TouchableOpacity, TouchableHighlight, ScrollView } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
 import { setCity, setUser } from '@modules/reducers/auth/actions';
@@ -43,109 +43,111 @@ export default Cities = (props) => {
     }, []);
 
     return (
-        <View style={styles.container}>
-            <View style={styles.content}>
-                <View style={styles.inputView}>
-                    <Text style={styles.labelText}>{i18n.translate('Where are you looking for a restaurant')}</Text>
-                    <TouchableOpacity style={styles.textContainer} onPress={() => setActive(!active)}>
-                        <MapPinIcon />
-                        <Text style={styles.itemText} numberOfLines={1}>{cityObj.cities}</Text>
-                        <Icon type='material' name='keyboard-arrow-down' size={30} color={colors.GREY.PRIMARY} />
+        <TouchableHighlight style={styles.container} activeOpacity={0.2} underlayColor={colors.WHITE} onPress={() => setActive(false)}>
+            <Fragment>
+                <View style={styles.content}>
+                    <View style={styles.inputView}>
+                        <Text style={styles.labelText}>{i18n.translate('Where are you looking for a restaurant')}</Text>
+                        <TouchableOpacity style={styles.textContainer} onPress={() => setActive(!active)}>
+                            <MapPinIcon />
+                            <Text style={styles.itemText} numberOfLines={1}>{cityObj.cities}</Text>
+                            <Icon type='material' name='keyboard-arrow-down' size={30} color={colors.GREY.PRIMARY} />
+                        </TouchableOpacity>
+                    </View>
+                    {active ? (
+                        <ScrollView style={styles.listView} keyboardShouldPersistTaps='handled'>
+                            {!isEmpty(citys) && citys.map((cityOne, key) => (
+                                <TouchableOpacity key={key} style={[styles.itemView, key == citys.length - 1 && styles.noborder]} onPress={() => {
+                                    setActive(false);
+                                    setCityObj(cityOne);
+                                    setCityStatus(true);
+                                }}>
+                                    <Text style={styles.itemText} numberOfLines={1}>{cityOne.cities}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
+                    ) : (
+                            <View style={styles.inputView}>
+                                <Text style={styles.searchLabel}>{i18n.translate('Quick search:')}</Text>
+                                <View style={styles.searchView}>
+                                    {!isEmpty(citys) ? (
+                                        <Fragment>
+                                            <TouchableOpacity onPress={() => {
+                                                setCityObj(citys[0]);
+                                                setVisible(true);
+                                                setCityStatus(true);
+                                            }}>
+                                                <Text style={styles.searchText}>{citys[0].cities}</Text>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity onPress={() => {
+                                                setCityObj(citys[1]);
+                                                setVisible(true);
+                                                setCityStatus(true);
+                                            }}>
+                                                <Text style={styles.searchText}>{citys[1].cities}</Text>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity onPress={() => {
+                                                setCityObj(citys[2]);
+                                                setVisible(true);
+                                                setCityStatus(true);
+                                            }}>
+                                                <Text style={styles.searchText}>{citys[2].cities}</Text>
+                                            </TouchableOpacity>
+                                        </Fragment>
+                                    ) : null}
+                                </View>
+                            </View>
+                        )}
+
+                </View>
+                <View style={styles.buttonView}>
+                    <TouchableOpacity
+                        disabled={!cityStatus ? true : false}
+                        style={[common.button, !cityStatus ? common.backColorGrey : common.backColorYellow]} onPress={() => {
+                            setVisible(false);
+                            !logged ? dispatch(setCity({
+                                id: cityObj.id,
+                                name: cityObj.cities,
+                                status: false
+                            })) : dispatch(setUser({
+                                token: user.token,
+                                email: user.email,
+                                name: user.name,
+                                city: {
+                                    id: cityObj.id,
+                                    name: cityObj.cities,
+                                    status: false
+                                }
+                            }));
+                            props.onSave();
+                        }} >
+                        <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Save')}</Text>
                     </TouchableOpacity>
                 </View>
-                {active ? (
-                    <ScrollView style={styles.listView}>
-                        {!isEmpty(citys) && citys.map((cityOne, key) => (
-                            <TouchableOpacity key={key} style={[styles.itemView, key == citys.length - 1 && styles.noborder]} onPress={() => {
-                                setActive(false);
-                                setCityObj(cityOne);
-                                setCityStatus(true);
-                            }}>
-                                <Text style={styles.itemText} numberOfLines={1}>{cityOne.cities}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </ScrollView>
-                ) : (
-                        <View style={styles.inputView}>
-                            <Text style={styles.searchLabel}>{i18n.translate('Quick search:')}</Text>
-                            <View style={styles.searchView}>
-                                {!isEmpty(citys) ? (
-                                    <Fragment>
-                                        <TouchableOpacity onPress={() => {
-                                            setCityObj(citys[0]);
-                                            setVisible(true);
-                                            setCityStatus(true);
-                                        }}>
-                                            <Text style={styles.searchText}>{citys[0].cities}</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity onPress={() => {
-                                            setCityObj(citys[1]);
-                                            setVisible(true);
-                                            setCityStatus(true);
-                                        }}>
-                                            <Text style={styles.searchText}>{citys[1].cities}</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity onPress={() => {
-                                            setCityObj(citys[2]);
-                                            setVisible(true);
-                                            setCityStatus(true);
-                                        }}>
-                                            <Text style={styles.searchText}>{citys[2].cities}</Text>
-                                        </TouchableOpacity>
-                                    </Fragment>
-                                ) : null}
-                            </View>
-                        </View>
-                    )}
-
-            </View>
-            <View style={styles.buttonView}>
-                <TouchableOpacity
-                    disabled={!cityStatus ? true : false}
-                    style={[common.button, !cityStatus ? common.backColorGrey : common.backColorYellow]} onPress={() => {
-                        setVisible(false);
-                        !logged ? dispatch(setCity({
-                            id: cityObj.id,
-                            name: cityObj.cities,
-                            status: false
-                        })) : dispatch(setUser({
-                            token: user.token,
-                            email: user.email,
-                            name: user.name,
-                            city: {
+                {visible ?
+                    <SaveModal
+                        cityObj={cityObj}
+                        onSave={() => {
+                            setVisible(false);
+                            !logged ? dispatch(setCity({
                                 id: cityObj.id,
                                 name: cityObj.cities,
                                 status: false
-                            }
-                        }));
-                        props.onSave();
-                    }} >
-                    <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Save')}</Text>
-                </TouchableOpacity>
-            </View>
-            {visible ?
-                <SaveModal
-                    cityObj={cityObj}
-                    onSave={() => {
-                        setVisible(false);
-                        !logged ? dispatch(setCity({
-                            id: cityObj.id,
-                            name: cityObj.cities,
-                            status: false
-                        })) : dispatch(setUser({
-                            token: user.token,
-                            email: user.email,
-                            name: user.name,
-                            city: {
-                                id: cityObj.id,
-                                name: cityObj.cities,
-                                status: false
-                            }
-                        }));
-                        props.onSave();
-                    }}
-                    onCancel={() => setVisible(false)} /> : null}
-        </View >
+                            })) : dispatch(setUser({
+                                token: user.token,
+                                email: user.email,
+                                name: user.name,
+                                city: {
+                                    id: cityObj.id,
+                                    name: cityObj.cities,
+                                    status: false
+                                }
+                            }));
+                            props.onSave();
+                        }}
+                        onCancel={() => setVisible(false)} /> : null}
+            </Fragment>
+        </TouchableHighlight>
     );
 }
 

@@ -39,14 +39,14 @@ export default CouponCodes = (props) => {
                 </View>
                 <View style={styles.buttonView}>
                     <Text style={styles.yellowTitle}>2. {i18n.translate('Package name')}</Text>
-                    <Text style={styles.normalText}>Havi 1200 Ft</Text>
+                    <Text style={styles.normalText}>Havi 1200 {i18n.translate('lei')}</Text>
                     <TouchableOpacity style={styles.button} onPress={() => alert('OK')}>
                         <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Select')}</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.buttonView}>
                     <Text style={styles.yellowTitle}>3. {i18n.translate('Package name')}</Text>
-                    <Text style={styles.normalText}>Havi 1200 Ft</Text>
+                    <Text style={styles.normalText}>Havi 1200 {i18n.translate('lei')}</Text>
                     <TouchableOpacity style={styles.button} onPress={() => alert('OK')}>
                         <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Select')}</Text>
                     </TouchableOpacity>

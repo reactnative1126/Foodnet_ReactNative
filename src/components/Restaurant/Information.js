@@ -32,6 +32,19 @@ export default Information = (props) => {
                 <Text style={[styles.cardTitle, { fontSize: 16 }]}>{i18n.translate('Description')}</Text>
                 <Text style={[styles.cardText, { fontSize: 14 }]}>{isEmpty(props.information.restaurant_description) ? '' : props.information.restaurant_description}</Text>
             </Card>
+            {!isEmpty(props.information.result) && (
+                <Card key='OpenHours' style={styles.card}>
+                    <Text style={[styles.cardTitle, { fontSize: 16 }]}>{i18n.translate('Opening Hours')}</Text>
+                    <View style={styles.open}>
+                        {props.information.result.map((open, key) => (
+                            <View key={`open${key}`} style={[styles.item, key == props.information.result.length - 1 ? null : { borderBottomWidth: 1 }]}>
+                                <Text style={{fontWeight: 'bold'}}>{open.day}</Text>
+                                <Text>{open.open} - {open.close}</Text>
+                            </View>
+                        ))}
+                    </View>
+                </Card>
+            )}
         </View>
     );
 }
@@ -56,4 +69,23 @@ const styles = StyleSheet.create({
         color: '#333',
         width: '100%'
     },
+    open: {
+        width: '100%',
+        borderWidth: 1,
+        borderColor: '#C4C4C4',
+        borderRadius: 8
+    },
+    item: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        padding: 20,
+        borderColor: '#C4C4C4',
+    },
+    time: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    }
 });

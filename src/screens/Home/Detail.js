@@ -5,7 +5,7 @@ import { Platform, StatusBar, StyleSheet, SafeAreaView, FlatList, View, Text, An
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
 import { setLoading } from '@modules/reducers/auth/actions';
-import { setCartRestaurant, setCartProducts, setCartBadge } from '@modules/reducers/food/actions';
+import { setCartProducts, setCartBadge } from '@modules/reducers/food/actions';
 import { FoodService } from '@modules/services';
 import { isEmpty } from '@utils/functions';
 import { Menu, Information, Reviews } from '@components';
@@ -24,7 +24,7 @@ const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 export default Detail = (props) => {
     const dispatch = useDispatch();
     const { country } = useSelector(state => state.auth);
-    const { filters, cartBadge, cartToast } = useSelector(state => state.food);
+    const { filters, cartRestaurant, cartBadge, cartToast } = useSelector(state => state.food);
 
     const [index, setIndex] = React.useState(0);
     const [routes] = React.useState([
@@ -33,7 +33,7 @@ export default Detail = (props) => {
         { key: 'third', title: i18n.translate('EVALUATION') },
     ]);
 
-    const [restaurant] = useState(props.route.params.restaurant);
+    const [restaurant, setRestaurant] = useState(props.route.params.restaurant);
     const [filterList, setFilterList] = useState([]);
     const [categories, setCategories] = useState([]);
     const [category, setCategory] = useState({
@@ -96,59 +96,43 @@ export default Detail = (props) => {
     });
 
     useEffect(() => {
-        const getFilterList = () => {
-            var tempFilters = [];
-            if (filters.freeDelivery == 1) tempFilters = [...tempFilters, { filter: i18n.translate('No shipping costs') }];
-            if (filters.newest == 1) tempFilters = [...tempFilters, { filter: i18n.translate('News') }];
-            if (filters.pizza == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Pizza') }];
-            if (filters.hamburger == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Hamburger') }];
-            if (filters.dailyMenu == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Daily menu') }];
-            if (filters.soup == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Soup') }];
-            if (filters.salad == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Salat') }];
-            if (filters.money == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Cash') }];
-            if (filters.card == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Card') }];
-            if (filters.withinOneHour == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Within 1 hour') }];
-            setFilterList(tempFilters);
-        }
-        getFilterList();
-
-        const getCategories = () => {
-            dispatch(setLoading(true));
-            FoodService.categories(country, restaurant.restaurant_id)
-                .then(async (response) => {
-                    dispatch(setLoading(false));
-                    if (response.status == 200) {
-                        setCategories(response.result);
-                        if (!isEmpty(response.result)) {
-                            setCategory(response.result[0]);
-                        }
+        var tempFilters = [];
+        if (filters.freeDelivery == 1) tempFilters = [...tempFilters, { filter: i18n.translate('No shipping costs') }];
+        if (filters.newest == 1) tempFilters = [...tempFilters, { filter: i18n.translate('News') }];
+        if (filters.pizza == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Pizza') }];
+        if (filters.hamburger == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Hamburger') }];
+        if (filters.dailyMenu == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Daily menu') }];
+        if (filters.soup == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Soup') }];
+        if (filters.salad == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Salat') }];
+        if (filters.money == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Cash') }];
+        if (filters.card == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Card') }];
+        if (filters.withinOneHour == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Within 1 hour') }];
+        setFilterList(tempFilters);
+        dispatch(setLoading(true));
+        FoodService.categories(country, restaurant.restaurant_id)
+            .then(async (response) => {
+                if (response.status == 200) {
+                    setCategories(response.result);
+                    if (!isEmpty(response.result)) {
+                        setCategory(response.result[0]);
                     }
-                })
-                .catch((error) => {
-                    dispatch(setLoading(false));
-                });
-        }
-        getCategories();
-
-        const getInformation = () => {
-            FoodService.information(country, restaurant.restaurant_name)
-                .then((response) => {
-                    if (response.status == 200) {
-                        setInformation(response.result[0]);
-                    }
-                })
-        }
-
-        getInformation();
-
-        return () => console.log('Unmounted');
-    }, []);
+                }
+            })
+            .catch((error) => {
+                dispatch(setLoading(false));
+            });
+        FoodService.information(country, restaurant.restaurant_name)
+            .then((response) => {
+                if (response.status == 200) {
+                    setInformation(response.result[0]);
+                }
+            })
+    }, [restaurant]);
 
     useEffect(() => {
         dispatch(setLoading(true));
         FoodService.subCategories(country, restaurant.restaurant_id, category.category_id)
             .then(async (response) => {
-                dispatch(setLoading(false));
                 if (response.status == 200) {
                     setSubCategories(response.result);
                     if (!isEmpty(response.result)) {
@@ -170,7 +154,7 @@ export default Detail = (props) => {
     useEffect(() => {
         if (first) {
             setVisible(true);
-            setTimeout(() => setVisible(false), 2000);
+            setTimeout(() => setVisible(false), 3000);
         } else {
             setFirst(true);
         }
@@ -179,9 +163,10 @@ export default Detail = (props) => {
     return (
         <SafeAreaView style={styles.saveArea}>
             <Animated.ScrollView contentContainerStyle={styles.content} scrollEventThrottle={16}
+                onScrollBeginDrag={() => setVisible(false)}
                 onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: true })}>
                 <TabView navigationState={{ index, routes }}
-                    swipeEnabled={Platform.OS === 'ios' ? true : false}
+                    // swipeEnabled={Platform.OS === 'ios' ? true : false}
                     renderTabBar={(props) => (
                         <TabBar {...props}
                             scrollEnabled={true}
@@ -207,6 +192,7 @@ export default Detail = (props) => {
                                     onSubCategory={(value) => setSubCategory(value)}
                                     onSearch={(value) => setSearch(value)}
                                     onExtra={(product, count) => props.navigation.push('Extra', { restaurant, product, count })}
+                                    onCart={() => props.navigation.navigate('Order')}
                                     onModal={() => setModal(true)}
                                 />;
                             case 'info':
@@ -266,7 +252,6 @@ export default Detail = (props) => {
                     </Animated.View>
                     <View style={common.headerRight}>
                         <TouchableOpacity onPress={() => {
-                            dispatch(setCartBadge(0));
                             props.navigation.navigate('Order');
                         }}>
                             {cartBadge > 0 ? (
@@ -287,10 +272,10 @@ export default Detail = (props) => {
                 </Header>
             </Animated.View>
             {visible && (
-                <View style={styles.toast}>
+                <TouchableOpacity style={styles.toast} onPress={() => setVisible(false)}>
                     <CheckIcon />
                     <Text style={styles.toastText}>{i18n.translate('Product in the cart')}</Text>
-                </View>
+                </TouchableOpacity>
             )}
             {modal && (
                 <View style={styles.modalContainer}>
@@ -300,12 +285,16 @@ export default Detail = (props) => {
                             <Text style={styles.modalTitle}>{i18n.translate('You havent placed your order from the')} {restaurant.restaurant_name} {i18n.translate('yet')}</Text>
                             <Text style={styles.modalDescription}>{i18n.translate('An order can only be from one restaurant')}</Text>
                         </View>
-                        <TouchableOpacity style={styles.modalButton} onPress={() => setModal(false)}>
-                            <Text style={styles.saveText}>{i18n.translate('Back to the')} {restaurant.restaurant_name} {i18n.translate('restaurant')}</Text>
+                        <TouchableOpacity style={styles.modalButton} onPress={() => {
+                            setModal(false);
+                            setRestaurant(cartRestaurant);
+                        }}>
+                            <Text style={styles.saveText}>{i18n.translate('Back to the')} {cartRestaurant.restaurant_name} {i18n.translate('restaurant')}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.modalButton} onPress={() => {
                             setModal(false);
                             // dispatch(setCartRestaurant(null));
+                            dispatch(setCartBadge(0));
                             dispatch(setCartProducts([]));
                         }}>
                             <Text style={styles.cancelText}>{i18n.translate('Empty cart add new product to the cart')}</Text>
@@ -514,7 +503,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        bottom: 0,
+        top: 200,
         paddingLeft: 50,
         width: wp('100%'),
         height: 60,

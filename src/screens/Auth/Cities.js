@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Header } from 'native-base';
-import { Platform, BackHandler, StatusBar, StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { Platform, BackHandler, StatusBar, StyleSheet, View, Text, TouchableOpacity, TouchableHighlight, ScrollView } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
 import { setLoading, setCity, setUser } from '@modules/reducers/auth/actions';

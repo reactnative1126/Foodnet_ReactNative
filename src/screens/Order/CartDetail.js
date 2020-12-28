@@ -1,66 +1,60 @@
 import React, { useState, useEffect, useRef, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Header, Content } from 'native-base';
-import { Platform, StatusBar, StyleSheet, SafeAreaView, FlatList, View, Text, Animated, Image, TouchableOpacity, LogBox } from 'react-native';
+import { Platform, StatusBar, StyleSheet, SafeAreaView, ScrollView, FlatList, View, Text, Animated, Image, TouchableOpacity, LogBox } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
 import { setLoading } from '@modules/reducers/auth/actions';
-import { setCartRestaurant, setCartProducts } from '@modules/reducers/food/actions';
-import { ProfileService, FoodService } from '@modules/services';
-import { isEmpty } from '@utils/functions';
+import { setCartRestaurant, setCartProducts, setCartBadge } from '@modules/reducers/food/actions';
+import { ProfileService, FoodService, AuthService } from '@modules/services';
+import { isEmpty, validateBetween } from '@utils/functions';
 import { common, colors } from '@constants/themes';
 import { RES_URL } from '@constants/configs';
-import { BackWhiteIcon, TrustIcon, SuccessIcon } from '@constants/svgs';
+import { BackWhiteIcon, TrustIcon, SuccessIcon, MapPinIcon } from '@constants/svgs';
 import i18n from '@utils/i18n';
 
 import moment from 'moment';
 import { TextField } from 'react-native-material-textfield';
 
 const CartItem = ({ cartRestaurant, cartProduct, index, onSelect, onDelete }) => {
-    const [count, setCount] = useState(cartProduct.quantity);
+    // const [count, setCount] = useState(cartProduct.quantity);
     return (
-        <View key={index} style={styles.cart}>
+        <View key={`cart${index}`} style={styles.cart}>
             <View style={styles.cartMain}>
-                <Text style={styles.cartText} numberOfLines={1}>{1}*{cartProduct.productName} - {cartProduct.quantity} {i18n.translate('people')}</Text>
-                {/* <TouchableOpacity style={{ marginLeft: 20 }} onPress={() => onDelete(false, cartProduct, count)}>
+                <Text style={styles.cartText} numberOfLines={1}>{cartProduct.quantity}*{cartProduct.productName}</Text>
+                <TouchableOpacity style={{ marginLeft: 20 }} onPress={() => onDelete(false, cartProduct, cartProduct.quantity)}>
                     <TrustIcon />
-                </TouchableOpacity> */}
+                </TouchableOpacity>
             </View>
-            <Text style={styles.allergen}>{i18n.translate('Allergens')}</Text>
+            <Text style={styles.allergen}>{cartProduct.productDescription}</Text>
             {!isEmpty(cartProduct.allergens) ? (
-                <Text style={styles.allergenList}>({cartProduct.allergens.map((allergen, key) => (
-                    <Text key={key} style={styles.allergen}>{allergen.allergen_name}{key != cartProduct.allergens.length - 1 ? ', ' : ''}</Text>
+                <Text style={styles.allergenList}>({i18n.translate('Allergens')}: {cartProduct.allergens.map((allergen, key) => (
+                    <Text key={`allergen${key}`} style={styles.allergen}>{allergen.allergen_name}{key != cartProduct.allergens.length - 1 ? ', ' : ''}</Text>
                 ))})</Text>
             ) : null}
             {!isEmpty(cartProduct.extras) ? (
                 <Text style={styles.extraList}>+{cartProduct.extras.map((extra, key) => (
-                    <Text key={key} style={styles.extra}>{extra.quantity}*{extra.extraName}{key != cartProduct.extras.length - 1 ? ', ' : ''}</Text>
+                    <Text key={`extra${key}`} style={styles.extra}>{extra.quantity}*{extra.extraName}{key != cartProduct.extras.length - 1 ? ', ' : ''}</Text>
                 ))}</Text>
             ) : null}
             <View style={styles.cartBottom}>
                 <View style={styles.cartLeft}>
-                    <Text style={styles.price}>{cartProduct.productPrice} Ft</Text>
+                    <Text style={styles.price}>{cartProduct.productPrice.toFixed(2)} {i18n.translate('lei')}</Text>
                     {!isEmpty(cartProduct.boxPrice) && (
-                        <Text style={styles.boxPrice}>{i18n.translate('Box price')}: {cartProduct.boxPrice}Ft</Text>
+                        <Text style={styles.boxPrice}>{i18n.translate('Box price')}: {cartProduct.boxPrice}{i18n.translate('lei')}</Text>
                     )}
                 </View>
-                {/* <View style={styles.cartButton}>
-                    <TouchableOpacity style={styles.countButton1} disabled={count == 1} onPress={() => {
-                        count > 1 && setCount(count - 1);
-                        count > 1 && onSelect(true, cartProduct, count - 1);
-                    }}>
+                <View style={styles.cartButton}>
+                    <TouchableOpacity style={styles.countButton1} disabled={cartProduct.quantity == 1} onPress={() => cartProduct.quantity > 1 && onSelect(true, cartProduct, cartProduct.quantity - 1)}>
                         <Icon type='material-community' name='minus' color='#333' size={25} />
                     </TouchableOpacity>
                     <View style={styles.count}>
-                        <Text style={{ color: '#333' }}>{count} db</Text>
+                        <Text style={{ color: '#333' }}>{cartProduct.quantity} db</Text>
                     </View>
-                    <TouchableOpacity style={styles.countButton2} onPress={() => {
-                        setCount(count + 1);
-                        onSelect(true, cartProduct, count + 1);
-                    }}>
+                    <TouchableOpacity style={styles.countButton2} onPress={() => onSelect(true, cartProduct, cartProduct.quantity + 1)}>
                         <Icon type='material-community' name='plus' color='#333' size={25} />
                     </TouchableOpacity>
-                </View> */}
+                </View>
             </View>
             {!isEmpty(cartProduct.message) ? (
                 <Fragment>
@@ -79,7 +73,7 @@ const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 export default CartDetail = (props) => {
     const dispatch = useDispatch();
     const { logged, country, city, user } = useSelector(state => state.auth);
-    const { cartRestaurant, cartProducts } = useSelector(state => state.food);
+    const { cartRestaurant, cartProducts, cartBadge } = useSelector(state => state.food);
 
     const [success, setSuccess] = useState(false);
     const [restaurant] = useState(cartRestaurant);
@@ -88,7 +82,6 @@ export default CartDetail = (props) => {
     const [itemTemp, setItemTemp] = useState(null);
     const [countTemp, setCountTemp] = useState(0);
     const [total, setTotal] = useState(0);
-    const [subscription, setSubscription] = useState(0);
 
     const [deliveryList, setDeliveryList] = useState([]);
     const [deliveryAddress, setDeliveryAddress] = useState({ value: 0, label: '' });
@@ -96,6 +89,21 @@ export default CartDetail = (props) => {
     const [cutlery, setCutlery] = useState(false);
     const [comment, setComment] = useState('');
     const [payment, setPayment] = useState(1);
+
+    const [addressId] = useState(0);
+    const [errorCity, setErrorCity] = useState('');
+    const [addressStreet, setAddressStreet] = useState('');
+    const [visitStreet, setVisitStreet] = useState(false);
+    const [errorStreet, setErrorStreet] = useState('');
+    const [addressHouseNumber, setAddressHouseNumber] = useState('');
+    const [visitHouseNumber, setVisitHouseNumber] = useState(false);
+    const [errorHouseNumber, setErrorHouseNumber] = useState('');
+    const [addressFloor, setAddressFloor] = useState('');
+    const [addressDoorNumber, setAddressDoorNumber] = useState('');
+
+    const [active, setActive] = useState(false);
+    const [citys, setCitys] = useState([]);
+    const [cityObj, setCityObj] = useState({ id: user.city.id, cities: user.city.name });
 
     const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -150,24 +158,41 @@ export default CartDetail = (props) => {
         }
         logged && getDeliveryAddress();
 
+        const getCities = () => {
+            dispatch(setLoading(true));
+            AuthService.cities(country)
+                .then((response) => {
+                    dispatch(setLoading(false));
+                    if (response.status == 200) {
+                        setCitys(response.locations);
+                    }
+                })
+                .catch((error) => {
+                    dispatch(setLoading(false));
+                });
+        }
+        getCities();
+
         return () => console.log('Unmounted');
     }, []);
 
     useEffect(() => {
+        (visitStreet && isEmpty(addressStreet)) || (visitStreet && !validateBetween(addressStreet, 2, 100)) ? setErrorStreet('The text length must be between 2 ~ 100 characters') : setErrorStreet('');
+        (visitHouseNumber && isEmpty(addressHouseNumber)) || (visitHouseNumber && !validateBetween(addressHouseNumber, 1, 20)) ? setErrorHouseNumber('The text must be less more than 20 characters') : setErrorHouseNumber('');
+    }, [addressStreet, visitStreet, addressHouseNumber, visitHouseNumber]);
+
+    useEffect(() => {
         var totalAmount = 0;
-        var subAmount = 0;
         cartProducts.map((cartProduct, key) => {
             totalAmount += cartProduct.quantity * cartProduct.productPrice;
             cartProduct.extras.map((extra, key) => {
-                subAmount += extra.quantity * extra.extraPrice;
+                totalAmount += extra.quantity * extra.extraPrice;
             });
         });
         setTotal(totalAmount);
-        setSubscription(subAmount);
     });
 
     const onDelete = (check, item, count) => {
-        setType(false);
         setCheckTemp(check);
         setItemTemp(item);
         setCountTemp(count);
@@ -180,31 +205,71 @@ export default CartDetail = (props) => {
                 return cartProduct.cartId == item.cartId
             });
             cartProducts[index].quantity = count;
+            var totalBadge = 0;
+            cartProducts.map((cartProduct, key) => {
+                totalBadge += cartProduct.quantity;
+            });
             dispatch(setCartProducts(cartProducts));
+            dispatch(setCartBadge(totalBadge));
         } else {
             var result = cartProducts.filter((cartProduct) => {
                 return cartProduct.cartId != item.cartId
             });
+            var totalBadge = 0;
+            result.map((cartProduct, key) => {
+                totalBadge += cartProduct.quantity;
+            });
             dispatch(setCartProducts(result));
+            dispatch(setCartBadge(totalBadge));
+            // dispatch(setCartBadge(cartBadge - 1));
+            if (totalBadge <= 0) props.navigation.pop();
         }
         setVisible(false);
     }
 
     const onOrder = () => {
-        setVisible(false);
-        dispatch(setLoading(true));
-        FoodService.order(deliveryAddress.value, cartRestaurant.restaurant_id, take, cutlery, cartProducts)
-            .then(async (response) => {
-                dispatch(setLoading(false));
-                if (response.status == 200) {
-                    setSuccess(true);
-                    dispatch(setCartRestaurant(null));
-                    dispatch(setCartProducts([]));
-                }
-            })
-            .catch((error) => {
-                dispatch(setLoading(false));
-            });
+        if (!logged || isEmpty(deliveryList)) {
+            if (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber) {
+                alert('Please enter required field');
+            } else {
+                dispatch(setLoading(true));
+                ProfileService.setDeliveryAddress(user.token, addressId, cityObj, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber)
+                    .then((response) => {
+                        if (response.status == 201 || response.status == 200) {
+                            FoodService.order(user.token, response.result.id, cartRestaurant.restaurant_id, take, cutlery, cartProducts)
+                                .then((resp) => {
+                                    dispatch(setLoading(false));
+                                    if (resp.status == 200) {
+                                        setSuccess(true);
+                                        // dispatch(setCartRestaurant(null));
+                                        dispatch(setCartBadge(0));
+                                        dispatch(setCartProducts([]));
+                                    }
+                                })
+                                .catch((error) => {
+                                    dispatch(setLoading(false));
+                                });
+                        }
+                    })
+                    .catch((error) => {
+                        dispatch(setLoading(false));
+                    });
+            }
+        } else {
+            FoodService.order(user.token, deliveryAddress.value, cartRestaurant.restaurant_id, take, cutlery, cartProducts)
+                .then((resp) => {
+                    dispatch(setLoading(false));
+                    if (resp.status == 200) {
+                        setSuccess(true);
+                        // dispatch(setCartRestaurant(null));
+                        dispatch(setCartBadge(0));
+                        dispatch(setCartProducts([]));
+                    }
+                })
+                .catch((error) => {
+                    dispatch(setLoading(false));
+                });
+        }
     }
 
     return (
@@ -228,11 +293,10 @@ export default CartDetail = (props) => {
                             )}
                         />
                         <View style={styles.amount}>
-                            <Text style={styles.price}>{i18n.translate('Total')}: {total} Ft</Text>
-                            <Text style={styles.subscription}>{i18n.translate('Subscription')}: {subscription} Ft</Text>
+                            <Text style={styles.price}>{i18n.translate('Total')}: {total.toFixed(2)} {i18n.translate('lei')}</Text>
                         </View>
                         <Text style={[styles.cartText, { marginTop: 20 }]} numberOfLines={1}>{i18n.translate('Take over')}</Text>
-                        {logged ? (
+                        {logged && !isEmpty(deliveryList) ? (
                             <View style={{ width: '100%' }}>
                                 {deliveryList.map((delivery, key) => (
                                     <TouchableOpacity key={key} style={styles.radioButton} onPress={() => {
@@ -247,8 +311,109 @@ export default CartDetail = (props) => {
                                 ))}
                             </View>
                         ) : (
-                                <View style={{ width: '100%' }}>
-
+                                <View style={styles.content1}>
+                                    <View style={styles.selectView1}>
+                                        <View style={common.flexRow}>
+                                            <Text style={[styles.labelText1, !isEmpty(errorCity) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Settlement')}</Text>
+                                            <Text style={[styles.labelTextNormal1, !isEmpty(errorCity) ? common.fontColorRed : common.fontColorBlack]}> ({i18n.translate('Required')})</Text>
+                                        </View>
+                                        <TouchableOpacity style={[styles.selectContainer1, !isEmpty(errorCity) ? common.borderColorRed : common.borderColorGrey]} onPress={() => setActive(!active)}>
+                                            <MapPinIcon />
+                                            <Text style={styles.itemText1} numberOfLines={1}>{cityObj.cities}</Text>
+                                            <Icon type='material' name='keyboard-arrow-down' size={30} color={colors.GREY.PRIMARY} />
+                                        </TouchableOpacity>
+                                        {/* <Text style={common.errorText}>{errorCity}</Text> */}
+                                    </View>
+                                    {active ? (
+                                        <ScrollView style={styles.listView1}>
+                                            {!isEmpty(citys) && citys.map((cityOne, key) => (
+                                                <TouchableOpacity key={key} style={[styles.itemView1, key == citys.length - 1 && styles.noborder1]} onPress={() => {
+                                                    setActive(false);
+                                                    setCityObj(cityOne);
+                                                }}>
+                                                    <Text style={styles.itemText1} numberOfLines={1}>{cityOne.cities}</Text>
+                                                </TouchableOpacity>
+                                            ))}
+                                        </ScrollView>
+                                    ) : (
+                                            <Fragment>
+                                                <View style={styles.streetView1}>
+                                                    <View style={common.flexRow}>
+                                                        <Text style={[styles.labelText1, !isEmpty(errorStreet) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('Street')}</Text>
+                                                        <Text style={[styles.labelTextNormal1, !isEmpty(errorStreet) ? common.fontColorRed : common.fontColorBlack]}> ({i18n.translate('Required')})</Text>
+                                                    </View>
+                                                    <TextField
+                                                        keyboardType='default'
+                                                        returnKeyType='next'
+                                                        fontSize={16}
+                                                        autoCorrect={false}
+                                                        enablesReturnKeyAutomatically={true}
+                                                        value={addressStreet}
+                                                        containerStyle={[styles.textContainer1, !isEmpty(errorStreet) ? common.borderColorRed : common.borderColorGrey]}
+                                                        inputContainerStyle={styles.inputContainer1}
+                                                        onChangeText={(value) => {
+                                                            setAddressStreet(value);
+                                                            setVisitStreet(true);
+                                                        }}
+                                                    />
+                                                    <Text style={common.errorText}>{errorStreet}</Text>
+                                                </View>
+                                                <View style={styles.threeView1}>
+                                                    <View style={styles.inputView1}>
+                                                        <Text style={[styles.labelText1, !isEmpty(errorHouseNumber) ? common.fontColorRed : common.fontColorBlack]}>{i18n.translate('House number')}</Text>
+                                                        <Text style={[styles.labelTextNormal1, !isEmpty(errorHouseNumber) ? common.fontColorRed : common.fontColorBlack]}> ({i18n.translate('Required')})</Text>
+                                                        <TextField
+                                                            keyboardType='default'
+                                                            returnKeyType='next'
+                                                            fontSize={16}
+                                                            autoCorrect={false}
+                                                            enablesReturnKeyAutomatically={true}
+                                                            value={addressHouseNumber}
+                                                            containerStyle={[styles.textContainer1, !isEmpty(errorHouseNumber) ? common.borderColorRed : common.borderColorGrey]}
+                                                            inputContainerStyle={styles.inputContainer1}
+                                                            onChangeText={(value) => {
+                                                                setAddressHouseNumber(value);
+                                                                setVisitHouseNumber(true);
+                                                            }}
+                                                        />
+                                                        <Text style={common.errorText}>{errorHouseNumber}</Text>
+                                                    </View>
+                                                    <View style={styles.inputView1}>
+                                                        <Text style={[styles.labelText1, common.fontColorBlack]}>{i18n.translate('Floor')}</Text>
+                                                        <Text style={[styles.labelTextNormal1, common.fontColorBlack]}> ({i18n.translate('Optional')})</Text>
+                                                        <TextField
+                                                            keyboardType='default'
+                                                            returnKeyType='next'
+                                                            fontSize={16}
+                                                            autoCorrect={false}
+                                                            enablesReturnKeyAutomatically={true}
+                                                            value={addressFloor}
+                                                            containerStyle={[styles.textContainer1, common.borderColorGrey]}
+                                                            inputContainerStyle={styles.inputContainer1}
+                                                            onChangeText={(value) => {
+                                                                setAddressFloor(value);
+                                                            }}
+                                                        />
+                                                    </View>
+                                                    <View style={styles.inputView1}>
+                                                        <Text style={[styles.labelText1, common.fontColorBlack]}>{i18n.translate('Door')}</Text>
+                                                        <Text style={[styles.labelTextNormal1, common.fontColorBlack]}> ({i18n.translate('Optional')})</Text>
+                                                        <TextField
+                                                            keyboardType='default'
+                                                            fontSize={16}
+                                                            autoCorrect={false}
+                                                            enablesReturnKeyAutomatically={true}
+                                                            value={addressDoorNumber}
+                                                            containerStyle={[styles.textContainer1, common.borderColorGrey]}
+                                                            inputContainerStyle={styles.inputContainer1}
+                                                            onChangeText={(value) => {
+                                                                setAddressDoorNumber(value);
+                                                            }}
+                                                        />
+                                                    </View>
+                                                </View>
+                                            </Fragment>
+                                        )}
                                 </View>
                             )}
                         <View style={{ height: 20 }} />
@@ -284,13 +449,13 @@ export default CartDetail = (props) => {
                             <Icon type='material' name={'radio-button-on'} color={colors.YELLOW.PRIMARY} size={20} />
                             <Text style={styles.radioText} numberOfLines={1}>{i18n.translate('Cash')}</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.radioButton} disabled={true}>
+                        {/* <TouchableOpacity style={styles.radioButton} disabled={true}>
                             <Icon type='material' name={'radio-button-off'} color={colors.BLACK} size={20} />
                             <Text style={styles.radioText} numberOfLines={1}>{i18n.translate('Credit card')}</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
 
                         <View style={{ marginTop: 30, marginBottom: 50, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                            <TouchableOpacity style={styles.button} onPress={() => setVisible(true)}>
+                            <TouchableOpacity style={styles.button} onPress={() => onOrder()}>
                                 <Text style={styles.buttonText}>{i18n.translate('Order Now')}</Text>
                             </TouchableOpacity>
                         </View>
@@ -346,8 +511,8 @@ export default CartDetail = (props) => {
                             <Text style={styles.modalTitle}>{i18n.translate('Are you sure you want to delete the contents of your cart')}</Text>
                             <Text style={styles.modalDescription}>{i18n.translate('This operation cannot be undone')}</Text>
                         </View>
-                        <TouchableOpacity style={styles.modalButton} onPress={() => onOrder()}>
-                            <Text style={styles.saveText}>{i18n.translate('Order Now')}</Text>
+                        <TouchableOpacity style={styles.modalButton} onPress={() => onSelect(checkTemp, itemTemp, countTemp)}>
+                            <Text style={styles.saveText}>{i18n.translate('Delete')}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.modalButton} onPress={() => setVisible(false)}>
                             <Text style={styles.cancelText}>{i18n.translate('Cancel')}</Text>
@@ -791,5 +956,88 @@ const styles = StyleSheet.create({
         marginTop: 20,
         fontSize: 18,
         color: '#111'
-    }
+    },
+
+
+    content1: {
+        width: '100%'
+    },
+    selectView1: {
+        marginTop: 20,
+        width: '100%'
+    },
+    selectContainer1: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        height: 50,
+        borderWidth: 1,
+        borderRadius: 8,
+        marginTop: 10,
+        paddingHorizontal: 10,
+        borderColor: colors.GREY.PRIMARY
+    },
+    streetView1: {
+        marginTop: 40,
+        width: '100%'
+    },
+    threeView1: {
+        marginTop: 20,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%'
+    },
+    inputView1: {
+        width: '30%'
+    },
+    textContainer1: {
+        width: '100%',
+        marginTop: 10,
+        height: 50,
+        borderWidth: 1,
+        borderRadius: 8,
+        paddingLeft: 15,
+        paddingRight: 20,
+    },
+    inputContainer1: {
+        marginTop: -20,
+        borderWidth: 0
+    },
+    itemText1: {
+        width: '75%',
+        fontSize: 16,
+        textAlign: 'left',
+    },
+    listView1: {
+        width: '100%',
+        height: 250,
+        paddingHorizontal: 10,
+        backgroundColor: colors.WHITE,
+        borderLeftWidth: 1,
+        borderRightWidth: 1,
+        borderBottomWidth: 1,
+        borderColor: colors.GREY.PRIMARY,
+        borderBottomLeftRadius: 8,
+        borderBottomRightRadius: 8
+    },
+    itemView1: {
+        width: '100%',
+        paddingHorizontal: 20,
+        paddingVertical: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: colors.GREY.PRIMARY
+    },
+    noborder1: {
+        borderBottomWidth: 0
+    },
+    labelText1: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: colors.BLACK
+    },
+    labelTextNormal1: {
+        fontSize: 16,
+        color: colors.BLACK
+    },
 });

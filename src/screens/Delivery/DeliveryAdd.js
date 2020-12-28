@@ -56,7 +56,7 @@ export default DeliveryAdd = (props) => {
                     dispatch(setLoading(false));
                 });
         }
-        setTimeout(() => getCities(), 500);
+        getCities();
 
         return () => console.log('Unmounted');
     }, []);
@@ -207,9 +207,8 @@ export default DeliveryAdd = (props) => {
                             </View>
                         </Fragment>
                     )}
-
             </View>
-        </Container >
+        </Container>
     );
 }
 
