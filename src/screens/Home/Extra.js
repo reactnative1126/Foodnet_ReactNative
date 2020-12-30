@@ -299,7 +299,7 @@ export default Extra = (props) => {
                         />
                     )}
                 />
-                {(!isEmpty(requireds) || !isEmpty(optionals)) && (
+                {/* {(!isEmpty(requireds) || !isEmpty(optionals)) && (
                     <Fragment>
                         <View style={{ width: wp('100%'), marginLeft: -10, height: 1, backgroundColor: '#C4C4C4' }} />
                         <View style={{ width: '100%', height: 80, justifyContent: 'center', alignItems: 'center' }}>
@@ -308,7 +308,7 @@ export default Extra = (props) => {
                             </TouchableOpacity>
                         </View>
                     </Fragment>
-                )}
+                )} */}
 
                 <Card key='review' style={styles.card}>
                     <View style={[common.flexRow, { marginTop: 10 }]}>

@@ -48,10 +48,8 @@ export default ProfileEdit = (props) => {
                         city: user.city
                     }));
                     props.navigation.push('Success', { type: 2 });
-                } else if(response.status == 400) {
-                    setErrorMsg(i18n.translate('E-mail already exist'));
                 } else {
-                    setErrorMsg(i18n.translate(response.msg));
+                    setErrorMsg(i18n.translate('E-mail already exist'));
                 }
             })
             .catch((error) => {

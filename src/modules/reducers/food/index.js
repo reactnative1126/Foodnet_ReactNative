@@ -35,12 +35,12 @@ export default function foodReducer(state = initialState, action) {
         case types.SET_CART_PRODUCTS:
             return {
                 ...state,
-                cartProducts: isEmpty(action.payload) ? initialState.cartProducts : action.payload,
+                cartProducts: isEmpty(action.payload) ? [] : action.payload,
             };
         case types.SET_CART_BADGE:
             return {
                 ...state,
-                cartBadge: isEmpty(action.payload) ? initialState.cartBadge : action.payload,
+                cartBadge: isEmpty(action.payload) ? 0 : action.payload,
             };
         case types.SET_CART_TOAST:
             return {

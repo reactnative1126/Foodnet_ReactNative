@@ -503,7 +503,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        top: 200,
+        bottom: 0,
         paddingLeft: 50,
         width: wp('100%'),
         height: 60,

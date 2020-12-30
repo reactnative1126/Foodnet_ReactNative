@@ -105,7 +105,7 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
                             <Icon type='material-community' name='plus' color='#333' size={25} />
                         </TouchableOpacity>
                         <View style={{ width: 10 }} />
-                        <TouchableOpacity style={styles.check} onPress={() => {
+                        <TouchableOpacity style={[styles.check, {backgroundColor: (parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(restaurant.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(restaurant.restaurant_close.replace(':', ''))) ? colors.GREY.PRIMARY : colors.YELLOW.PRIMARY}]} disabled={(parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(restaurant.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(restaurant.restaurant_close.replace(':', '')))} onPress={() => {
                             if (!isEmpty(cartProducts) && cartRestaurant.restaurant_id != restaurant.restaurant_id) {
                                 onModal();
                             } else {

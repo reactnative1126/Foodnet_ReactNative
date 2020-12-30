@@ -70,7 +70,6 @@ export default Cart = (props) => {
     const [countTemp, setCountTemp] = useState(0);
     const [total, setTotal] = useState(0);
 
-
     useEffect(() => {
         var totalAmount = 0;
         cartProducts.map((cartProduct, key) => {
@@ -101,8 +100,8 @@ export default Cart = (props) => {
             cartProducts.map((cartProduct, key) => {
                 totalBadge += cartProduct.quantity;
             });
-            dispatch(setCartProducts(cartProducts));
             dispatch(setCartBadge(totalBadge));
+            dispatch(setCartProducts(cartProducts));
         } else {
             var result = cartProducts.filter((cartProduct) => {
                 return cartProduct.cartId != item.cartId
@@ -111,8 +110,8 @@ export default Cart = (props) => {
             result.map((cartProduct, key) => {
                 totalBadge += cartProduct.quantity;
             });
-            dispatch(setCartProducts(result));
             dispatch(setCartBadge(totalBadge));
+            dispatch(setCartProducts(result));
             // dispatch(setCartBadge(cartBadge - 1));
         }
         setVisible(false);
@@ -147,7 +146,7 @@ export default Cart = (props) => {
                             </Fragment>
                         ) : (
                                 <Fragment>
-                                    <CartWhiteIcon />
+                                    <CartYellowIcon />
                                     <View style={styles.badgeEmpty} />
                                 </Fragment>
                             )}
