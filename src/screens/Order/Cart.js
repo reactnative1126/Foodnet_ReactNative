@@ -81,7 +81,7 @@ export default Cart = (props) => {
             });
         });
         setTotal(totalAmount);
-        console.log(cartRestaurant);
+        // console.log(cartRestaurant);
     });
 
     const onDelete = (check, item, count) => {
@@ -184,7 +184,7 @@ export default Cart = (props) => {
                                     setTimeout(() => setDisabled(false), 1000);
                                 }}>
                                 {(cartRestaurant.minimumOrderUser >= total.toFixed(2)) ? (
-                                    <Text style={styles.buttonText}>{i18n.translate('Minimum')} {cartRestaurant.minimumOrderUser} {i18n.translate('lei')}</Text>
+                                    <Text style={styles.buttonText}>{i18n.translate('More')} {cartRestaurant.minimumOrderUser - total.toFixed(2)} {i18n.translate('lei')}</Text>
                                 ) : (
                                         <Text style={styles.buttonText}>{i18n.translate('Send order')}</Text>
                                     )}

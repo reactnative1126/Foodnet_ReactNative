@@ -1,4 +1,5 @@
 import axios, { setClientToken, removeClientToken } from '@utils/axios';
+import { isEmpty } from '@utils/functions';
 
 const FoodService = {
     promotion: function (country, cityName) {
@@ -89,31 +90,57 @@ const FoodService = {
         });
     },
 
-    order: function (token, deliveryAddressId, restaurantId, take, cutlery, products) {
+    order: function (token, deliveryAddressId, restaurantId, take, cutlery, products, comment) {
         setClientToken(token);
+        console.log(JSON.stringify({
+            token,
+            deliveryAddressId,
+            restaurantId,
+            take: take ? 1 : 0,
+            cutlery: cutlery ? 1 : 0,
+            products,
+            messageCourier: comment
+        }))
         return axios.post(`/order`, {
             deliveryAddressId,
             restaurantId,
             take: take ? 1 : 0,
             cutlery: cutlery ? 1 : 0,
-            products
+            products,
+            messageCourier: comment
         }).then((response) => {
             removeClientToken();
             return response.data;
         });
     },
-    orderWithDeliveryAddress: function (cityObj, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber, restaurantId, take, cutlery, products) {
+    orderWithDeliveryAddress: function (token, cityObj, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber, restaurantId, take, cutlery, products, comment) {
+        !isEmpty(token) && setClientToken(token);
+        console.log(JSON.stringify({
+            token,
+            restaurantId,
+            take: take ? 1 : 0,
+            cutlery: cutlery ? 1 : 0,
+            products,
+            messageCourier: comment,
+            street: addressStreet,
+            houseNumber: addressHouseNumber,
+            floor: addressFloor,
+            doorNumber: addressDoorNumber,
+            locationId: cityObj.id
+        }))
         return axios.post(`/order`, {
             restaurantId,
             take: take ? 1 : 0,
             cutlery: cutlery ? 1 : 0,
             products,
+            messageCourier: comment,
             street: addressStreet,
             houseNumber: addressHouseNumber,
             floor: addressFloor,
             doorNumber: addressDoorNumber,
             locationId: cityObj.id
         }).then((response) => {
+            !isEmpty(token) && removeClientToken(token);
             return response.data;
         });
     },

@@ -104,6 +104,7 @@ export default CartDetail = (props) => {
     const [active, setActive] = useState(false);
     const [citys, setCitys] = useState([]);
     const [cityObj, setCityObj] = useState({ id: user.city.id, cities: user.city.name });
+    const [disabled, setDisabled] = useState(false);
 
     const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -228,12 +229,14 @@ export default CartDetail = (props) => {
     }
 
     const onOrder = () => {
+        setDisabled(true);
+        setTimeout(() => setDisabled(false), 1000);
         if (!logged || isEmpty(deliveryList)) {
             if (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber) {
                 alert('Please enter required field');
             } else {
                 dispatch(setLoading(true));
-                FoodService.orderWithDeliveryAddress(cityObj, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber, cartRestaurant.restaurant_id, take, cutlery, cartProducts)
+                FoodService.orderWithDeliveryAddress(user.token, cityObj, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber, cartRestaurant.restaurant_id, take, cutlery, cartProducts, comment)
                     .then((response) => {
                         dispatch(setLoading(false));
                         if (response.status == 200) {
@@ -248,7 +251,7 @@ export default CartDetail = (props) => {
                     });
             }
         } else {
-            FoodService.order(user.token, deliveryAddress.value, cartRestaurant.restaurant_id, take, cutlery, cartProducts)
+            FoodService.order(user.token, deliveryAddress.value, cartRestaurant.restaurant_id, take, cutlery, cartProducts, comment)
                 .then((response) => {
                     dispatch(setLoading(false));
                     if (response.status == 200) {
@@ -450,7 +453,7 @@ export default CartDetail = (props) => {
                             <TouchableOpacity style={[styles.button,
                             ((!logged || isEmpty(deliveryList)) && (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ? common.backColorGrey : common.backColorYellow
                             ]}
-                                disabled={!logged && (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)}
+                                disabled={disabled || (!logged && (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber))}
                                 onPress={() => onOrder()}>
                                 <Text style={styles.buttonText}>{i18n.translate('Order Now')}</Text>
                             </TouchableOpacity>
