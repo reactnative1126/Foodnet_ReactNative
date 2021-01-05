@@ -14,6 +14,7 @@ import i18n from '@utils/i18n';
 import { TextField } from 'react-native-material-textfield';
 import CodeInput from 'react-native-code-input';
 import CountDown from 'react-native-countdown-component';
+import { isMoment } from 'moment';
 
 export default Forgot = (props) => {
     const dispatch = useDispatch();
@@ -36,19 +37,22 @@ export default Forgot = (props) => {
         AuthService.verification(email)
             .then((response) => {
                 dispatch(setLoading(false));
-                if (response.status == 200) {
+                if (response.status == 200 && !isEmpty(response.result)) {
                     setVisible(true);
                     setResend(false);
                     setCode(response.result[0].reset_code);
                 } else {
-                    setVisible(true);
-                    setResend(false);
-                    setCode(123456);
+                    setErrorMsg(i18n.translate('This email is not register'));
+                    setTimeout(() => setErrorMsg(''), 2500);
+                    // setVisible(true);
+                    // setResend(false);
+                    // setCode(123456);
                 }
             })
             .catch((error) => {
                 dispatch(setLoading(false));
                 setErrorMsg(error.message);
+                setTimeout(() => setErrorMsg(''), 2500);
             });
     }
 
@@ -56,8 +60,9 @@ export default Forgot = (props) => {
         if (code == value) {
             props.navigation.navigate('Reset', { email, code })
         } else {
-            setErrorMsg('Incorrect Code');
-            setTimeout(() => setErrorMsg(''), 1500);
+            setErrorMsg(i18n.translate('Incorrect Code'));
+            setCode('');
+            setTimeout(() => setErrorMsg(''), 2000);
         };
     }
 

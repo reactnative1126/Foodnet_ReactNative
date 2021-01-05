@@ -309,3 +309,54 @@
         }
     ]
 }
+
+
+{
+    "token": null,
+    "restaurantId": 1,
+    "take": 1,
+    "cutlery": 1,
+    "products": [
+        {
+            "cartId": 1609385373941,
+            "variantId": 3,
+            "productId": 3,
+            "productName": "Pizza Proscuito",
+            "productDescription": "Pizza Proscuito description en",
+            "allergens": [
+                {
+                    "allergen_name": "Gluten"
+                }
+            ],
+            "productPrice": 18.99,
+            "boxPrice": 1.5,
+            "quantity": 1,
+            "message": "",
+            "extras": [
+                {
+                    "id": 7,
+                    "quantity": 2,
+                    "extraName": "Leves 1",
+                    "extraPrice": 1
+                },
+                {
+                    "id": 2,
+                    "quantity": 3,
+                    "extraName": "Mushroom",
+                    "extraPrice": 2
+                },
+                {
+                    "id": 1,
+                    "quantity": 1,
+                    "extraName": "Pizza sauce",
+                    "extraPrice": 2.5
+                }
+            ]
+        }
+    ],
+    "street": "Street",
+    "houseNumber": "House",
+    "floor": "Floor",
+    "doorNumber": "Door",
+    "locationId": 1
+}

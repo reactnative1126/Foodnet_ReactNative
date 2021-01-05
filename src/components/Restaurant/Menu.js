@@ -105,13 +105,16 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
                             <Icon type='material-community' name='plus' color='#333' size={25} />
                         </TouchableOpacity>
                         <View style={{ width: 10 }} />
-                        <TouchableOpacity style={[styles.check, {backgroundColor: (parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(restaurant.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(restaurant.restaurant_close.replace(':', ''))) ? colors.GREY.PRIMARY : colors.YELLOW.PRIMARY}]} disabled={(parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(restaurant.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(restaurant.restaurant_close.replace(':', '')))} onPress={() => {
-                            if (!isEmpty(cartProducts) && cartRestaurant.restaurant_id != restaurant.restaurant_id) {
-                                onModal();
-                            } else {
-                                flag ? onCart() : onExtra(product, count);
-                            }
-                        }}>
+                        <TouchableOpacity 
+                            style={[styles.check, { backgroundColor: (parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(restaurant.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(restaurant.restaurant_close.replace(':', ''))) ? colors.GREY.PRIMARY : colors.YELLOW.PRIMARY }]}
+                            disabled={(parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(restaurant.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(restaurant.restaurant_close.replace(':', '')))} 
+                            onPress={() => {
+                                if (!isEmpty(cartProducts) && cartRestaurant.restaurant_id != restaurant.restaurant_id) {
+                                    onModal();
+                                } else {
+                                    flag ? onCart() : onExtra(product, count);
+                                }
+                            }}>
                             {flag ? (<Icon type='material' name='check' color={colors.WHITE} size={25} />) : (<CartWhiteIcon />)}
                         </TouchableOpacity>
                     </View>

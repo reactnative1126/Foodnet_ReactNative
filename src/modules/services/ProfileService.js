@@ -49,6 +49,7 @@ const ProfileService = {
         });
     },
     modifyProfileInformation: function (token, fullName, email, phoneNumber) {
+        console.log(token)
         setClientToken(token);
         return axios.post(`/profile/me`, {
             email,

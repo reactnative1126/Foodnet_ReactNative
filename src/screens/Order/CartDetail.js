@@ -233,22 +233,14 @@ export default CartDetail = (props) => {
                 alert('Please enter required field');
             } else {
                 dispatch(setLoading(true));
-                ProfileService.setDeliveryAddress(user.token, addressId, cityObj, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber)
+                FoodService.orderWithDeliveryAddress(cityObj, addressStreet, addressHouseNumber, addressFloor, addressDoorNumber, cartRestaurant.restaurant_id, take, cutlery, cartProducts)
                     .then((response) => {
-                        if (response.status == 201 || response.status == 200) {
-                            FoodService.order(user.token, response.result.id, cartRestaurant.restaurant_id, take, cutlery, cartProducts)
-                                .then((resp) => {
-                                    dispatch(setLoading(false));
-                                    if (resp.status == 200) {
-                                        setSuccess(true);
-                                        // dispatch(setCartRestaurant(null));
-                                        dispatch(setCartBadge(0));
-                                        dispatch(setCartProducts([]));
-                                    }
-                                })
-                                .catch((error) => {
-                                    dispatch(setLoading(false));
-                                });
+                        dispatch(setLoading(false));
+                        if (response.status == 200) {
+                            setSuccess(true);
+                            // dispatch(setCartRestaurant(null));
+                            dispatch(setCartBadge(0));
+                            dispatch(setCartProducts([]));
                         }
                     })
                     .catch((error) => {
@@ -257,9 +249,9 @@ export default CartDetail = (props) => {
             }
         } else {
             FoodService.order(user.token, deliveryAddress.value, cartRestaurant.restaurant_id, take, cutlery, cartProducts)
-                .then((resp) => {
+                .then((response) => {
                     dispatch(setLoading(false));
-                    if (resp.status == 200) {
+                    if (response.status == 200) {
                         setSuccess(true);
                         // dispatch(setCartRestaurant(null));
                         dispatch(setCartBadge(0));
@@ -455,7 +447,11 @@ export default CartDetail = (props) => {
                         </TouchableOpacity> */}
 
                         <View style={{ marginTop: 30, marginBottom: 50, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                            <TouchableOpacity style={styles.button} onPress={() => onOrder()}>
+                            <TouchableOpacity style={[styles.button,
+                            ((!logged || isEmpty(deliveryList)) && (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ? common.backColorGrey : common.backColorYellow
+                            ]}
+                                disabled={!logged && (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)}
+                                onPress={() => onOrder()}>
                                 <Text style={styles.buttonText}>{i18n.translate('Order Now')}</Text>
                             </TouchableOpacity>
                         </View>
@@ -705,7 +701,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 8,
-        backgroundColor: colors.YELLOW.PRIMARY
+        // backgroundColor: colors.YELLOW.PRIMARY
     },
     buttonText: {
         fontSize: 16,

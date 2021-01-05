@@ -220,6 +220,11 @@
     "Available": "Disponibil",
     "Ingredients": "Ingrediente",
     "E-mail already exist": "E-mail deja există",
+    "Phone number already exist": "Numărul de telefon există deja",
+    "E-mail and phone number already exist": "E-mail si numar de telefon deja exista",
+    "This email is not register": "Acest e-mail nu este înregistrat",
+    "Incorrect Code": "Cod incorect",
     "lei": "lei",
-    "Opening Hours": "Ore de deschidere"
+    "Opening Hours": "Ore de deschidere",
+    "Minimum":"Minimum"
 }

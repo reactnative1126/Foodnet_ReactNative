@@ -220,6 +220,11 @@
     "Available": "Available",
     "Ingredients": "Ingredients",
     "E-mail already exist": "E-mail already exist",
+    "Phone number already exist": "Phone number already exist",
+    "E-mail and phone number already exist": "E-mail and phone number already exist",
+    "This email is not register": "This email is not register",
+    "Incorrect Code": "Incorrect Code",
     "lei": "lei",
-    "Opening Hours": "Opening Hours"
+    "Opening Hours": "Opening Hours",
+    "Minimum":"Minimum"
 }

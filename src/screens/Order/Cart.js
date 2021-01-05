@@ -69,6 +69,7 @@ export default Cart = (props) => {
     const [itemTemp, setItemTemp] = useState(null);
     const [countTemp, setCountTemp] = useState(0);
     const [total, setTotal] = useState(0);
+    const [disabled, setDisabled] = useState(false);
 
     useEffect(() => {
         var totalAmount = 0;
@@ -80,6 +81,7 @@ export default Cart = (props) => {
             });
         });
         setTotal(totalAmount);
+        console.log(cartRestaurant);
     });
 
     const onDelete = (check, item, count) => {
@@ -173,8 +175,19 @@ export default Cart = (props) => {
                             <Text style={styles.price}>{i18n.translate('Total')}: {total.toFixed(2)} {i18n.translate('lei')}</Text>
                         </View>
                         <View style={{ marginTop: 20, marginBottom: 50, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                            <TouchableOpacity style={styles.button} onPress={() => props.navigation.push('CartDetail')}>
-                                <Text style={styles.buttonText}>{i18n.translate('Send order')}</Text>
+                            <TouchableOpacity
+                                style={[styles.button, (disabled || (cartRestaurant.minimumOrderUser >= total.toFixed(2))) ? common.backColorGrey : common.backColorYellow]}
+                                disabled={disabled || (cartRestaurant.minimumOrderUser >= total.toFixed(2))}
+                                onPress={() => {
+                                    setDisabled(true);
+                                    props.navigation.push('CartDetail');
+                                    setTimeout(() => setDisabled(false), 1000);
+                                }}>
+                                {(cartRestaurant.minimumOrderUser >= total.toFixed(2)) ? (
+                                    <Text style={styles.buttonText}>{i18n.translate('Minimum')} {cartRestaurant.minimumOrderUser} {i18n.translate('lei')}</Text>
+                                ) : (
+                                        <Text style={styles.buttonText}>{i18n.translate('Send order')}</Text>
+                                    )}
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => {
                                 setType(true);
@@ -189,7 +202,7 @@ export default Cart = (props) => {
                             <Text style={styles.emptyText1}>{i18n.translate('Your cart is currently empty')}</Text>
                             <Text style={styles.emptyText2}>{i18n.translate('But tomorrow versatile and mass I hate football and a valuable asset to free macro as an integer')}</Text>
                             <TouchableOpacity style={[common.button, common.backColorYellow, common.marginTop35]} onPress={() => props.navigation.goBack()}>
-                                <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Look around')}</Text>
+                                <Text style={[common.buttonText, common.fontColorWhite]}>{i18n.translate('Minimum')} {cartRestaurant.minimumOrderUser} {i18n.translate('lei')}</Text>
                             </TouchableOpacity>
                         </View>
                     )}

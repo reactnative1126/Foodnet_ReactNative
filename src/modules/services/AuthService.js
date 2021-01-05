@@ -9,8 +9,9 @@ const AuthService = {
             return response.data;
         });
     },
-    register: function (name, email, password, newsletter) {
+    register: function (country, name, email, password, newsletter) {
         return axios.post(`/auth/register`, {
+            lang: country,
             email,
             name,
             password,
@@ -20,7 +21,7 @@ const AuthService = {
         });
     },
     verification: function (email) {
-        return axios.post(`/auth/reset-password`, {
+        return axios.post(`/auth/verification`, {
             email
         }).then((response) => {
             return response.data;

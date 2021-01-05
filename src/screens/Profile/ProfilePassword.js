@@ -105,7 +105,7 @@ export default ProfilePassword = (props) => {
                         containerStyle={[styles.textContainer, !isEmpty(errorOldPassword) ? common.borderColorRed : common.borderColorGrey]}
                         inputContainerStyle={styles.inputContainer}
                         renderRightAccessory={() => {
-                            let name = secureTextEntry2 ? 'eye' : 'eye-off';
+                            let name = secureTextEntry1 ? 'eye' : 'eye-off';
                             return (
                                 <Icon name={name} type='feather' size={24} color={TextField.defaultProps.baseColor} onPress={() => setSecureTextEntry1(!secureTextEntry1)} />
                             )

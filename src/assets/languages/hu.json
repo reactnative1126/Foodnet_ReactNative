@@ -220,6 +220,11 @@
     "Available": "Rendelhető",
     "Ingredients": "Összetevők",
     "E-mail already exist": "Az e-mail cím foglalt",
+    "Phone number already exist": "Telefonszám már létezik",
+    "E-mail and phone number already exist": "E-mail es a telefonszam mar letezik",
+    "This email is not register": "Ez az e-mail nem regisztrált",
+    "Incorrect Code": "Hibás kód",
     "lei": "lej",
-    "Opening Hours": "Nyitvatartás"
+    "Opening Hours": "Nyitvatartás",
+    "Minimum":"Minimum"
 }

@@ -56,8 +56,8 @@ export default Detail = (props) => {
     });
     const [search, setSearch] = useState('');
     const [rating, setRating] = useState(0);
-    const [reviews] = useState([]);
-    const [average] = useState(0);
+    const [reviews, setReviews] = useState([]);
+    const [average, setAverage] = useState(0);
     const [visible, setVisible] = useState(false);
     const [first, setFirst] = useState(false);
     const [modal, setModal] = useState(false);
@@ -133,6 +133,7 @@ export default Detail = (props) => {
         dispatch(setLoading(true));
         FoodService.subCategories(country, restaurant.restaurant_id, category.category_id)
             .then(async (response) => {
+                dispatch(setLoading(false));
                 if (response.status == 200) {
                     setSubCategories(response.result);
                     if (!isEmpty(response.result)) {
@@ -150,6 +151,21 @@ export default Detail = (props) => {
                 dispatch(setLoading(false));
             });
     }, [category]);
+
+    useEffect(() => {
+        dispatch(setLoading(true));
+        FoodService.reviews(restaurant.restaurant_name, rating)
+            .then(async (response) => {
+                dispatch(setLoading(false));
+                if (response.status == 200 && !isEmpty(response.result)) {
+                    setReviews(response.result[0].ratings);
+                    setAverage(response.result[0].AVGrating);
+                }
+            })
+            .catch((error) => {
+                dispatch(setLoading(false));
+            });
+    }, [rating]);
 
     useEffect(() => {
         if (first) {

@@ -16,6 +16,7 @@ import { color } from 'react-native-reanimated';
 
 export default SignUp = (props) => {
     const dispatch = useDispatch();
+    const { country } = useSelector(state => state.auth);
 
     const [name, setName] = useState('');
     const [visitName, setVisitName] = useState(false);
@@ -45,7 +46,7 @@ export default SignUp = (props) => {
 
     const onSignup = () => {
         dispatch(setLoading(true));
-        AuthService.register(name, email, password, newsLetter ? 1 : 0)
+        AuthService.register(country, name, email, password, newsLetter ? 1 : 0)
             .then((response) => {
                 dispatch(setLoading(false));
                 if (response.status == 200 || response.status == 201) {
