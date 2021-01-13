@@ -1,16 +1,16 @@
 import React from 'react';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 
-import { Cart, CartDetail } from '@screens';
+import { OrderIndex, OrderDetail } from '@screens';
 import { navOptionHandler } from '@utils/functions';
 
 const StackOrder = createStackNavigator();
 export default OrderStack = () => {
   return (
-    <StackOrder.Navigator initialRouteName='Cart'
+    <StackOrder.Navigator initialRouteName='OrderIndex'
       screenOptions={{ ...TransitionPresets.SlideFromRightIOS }}>
-      <StackOrder.Screen name='Cart' component={Cart} options={navOptionHandler} />
-      <StackOrder.Screen name='CartDetail' component={CartDetail} options={navOptionHandler} />
+      <StackOrder.Screen name='OrderIndex' component={OrderIndex} options={navOptionHandler} />
+      <StackOrder.Screen name='OrderDetail' component={OrderDetail} options={navOptionHandler} />
     </StackOrder.Navigator>
   )
 }

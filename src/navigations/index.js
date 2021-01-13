@@ -5,7 +5,7 @@ import { createStackNavigator, TransitionPresets } from '@react-navigation/stack
 import NetInfo from '@react-native-community/netinfo';
 import i18n from '@utils/i18n';
 
-import { Internet, Start, Cities, Languages } from '@screens';
+import { Internet, Start, Cities, Languages, OrderSuccess } from '@screens';
 import { Loading } from '@components';
 import DrawerNavigator from '@navigations/DrawerNavigator';
 import AuthStack from '@navigations/StackNavigators/AuthStackNavigator';
@@ -44,6 +44,7 @@ export default AppContainer = () => {
                     <StackApp.Screen name='Internet' component={Internet} options={{ headerShown: false, animationEnabled: false }} />
                     <StackApp.Screen name='Cities' component={Cities} options={navOptionHandler} />
                     <StackApp.Screen name='Languages' component={Languages} options={navOptionHandler} />
+                    <StackApp.Screen name='OrderSuccess' component={OrderSuccess} options={navOptionHandler} />
                 </StackApp.Navigator>
             </NavigationContainer>
             <Loading />

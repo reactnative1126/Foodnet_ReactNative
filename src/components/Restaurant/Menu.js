@@ -24,16 +24,16 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
     const [flag, setFlag] = useState(false);
 
     useEffect(() => {
-        // console.log('1--', moment(product.startTime).format('MM/DD/YYYY, h:mm:ss A'))
-        // console.log('2--', moment().format('MM/DD/YYYY, h:mm:ss A'))
-        // console.log('3--', moment(product.endTime).format('MM/DD/YYYY, h:mm:ss A'))
-        // console.log('4--', product.soldOut)
-        var index = cartProducts.findIndex((cartProduct) => {
-            return cartRestaurant.restaurant_id == restaurant.restaurant_id && cartProduct.productId == product.product_id && cartProduct.variantId == product.variant_id
-        });
-        if (index >= 0) {
-            setCount(cartProducts[index].quantity);
-            setFlag(true);
+        if(isEmpty(cartProducts)) {
+            return;
+        } else {
+            var index = cartProducts.findIndex((cartProduct) => {
+                return cartRestaurant.restaurant_id == restaurant.restaurant_id && cartProduct.productId == product.product_id && cartProduct.variantId == product.variant_id
+            });
+            if (index >= 0) {
+                setCount(cartProducts[index].quantity);
+                setFlag(true);
+            }
         }
     });
 
@@ -93,7 +93,7 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
                     </View>
                 )}
                 <View style={styles.productCart}>
-                    <Text style={styles.price}>{product.product_price} {i18n.translate('lei')}</Text>
+                    <Text style={styles.price}>{product.product_price.toFixed(2)} {i18n.translate('lei')}</Text>
                     <View style={styles.cart}>
                         <TouchableOpacity style={styles.countButton1} disabled={count == 1 || flag} onPress={() => count > 1 && setCount(count - 1)}>
                             <Icon type='material-community' name='minus' color='#333' size={25} />
@@ -105,9 +105,9 @@ const Product = ({ cartRestaurant, cartProducts, restaurant, product, index, onE
                             <Icon type='material-community' name='plus' color='#333' size={25} />
                         </TouchableOpacity>
                         <View style={{ width: 10 }} />
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             style={[styles.check, { backgroundColor: (parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(restaurant.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(restaurant.restaurant_close.replace(':', ''))) ? colors.GREY.PRIMARY : colors.YELLOW.PRIMARY }]}
-                            disabled={(parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(restaurant.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(restaurant.restaurant_close.replace(':', '')))} 
+                            disabled={(parseInt(moment().format('HH:mm').replace(':', '')) <= parseInt(restaurant.restaurant_open.replace(':', '')) || parseInt(moment().format('HH:mm').replace(':', '')) >= parseInt(restaurant.restaurant_close.replace(':', '')))}
                             onPress={() => {
                                 if (!isEmpty(cartProducts) && cartRestaurant.restaurant_id != restaurant.restaurant_id) {
                                     onModal();
@@ -134,7 +134,9 @@ export default Menu = (props) => {
     useEffect(() => LogBox.ignoreLogs(['VirtualizedLists should never be nested']), []);
 
     useEffect(() => {
-        dispatch(setLoading(true));
+        if(!isEmpty(props.categories) && !isEmpty(props.subCategories)) {
+            dispatch(setLoading(true));
+        }
         setProducts([]);
         FoodService.products(country, props.restaurant.restaurant_id, props.category.category_id, props.subCategory.subcategoryId, props.subCategory.propertyValTransId, props.search)
             .then(async (response) => {
@@ -151,6 +153,22 @@ export default Menu = (props) => {
                 setProducts([]);
             });
     }, [props.subCategory, cartRestaurant, cartProducts]);
+
+    useEffect(() => {
+        setProducts([]);
+        FoodService.products(country, props.restaurant.restaurant_id, props.category.category_id, props.subCategory.subcategoryId, props.subCategory.propertyValTransId, props.search)
+            .then(async (response) => {
+                if (response.status == 200) {
+                    setProducts(response.result);
+                } else {
+                    // dispatch(setLoading(false));
+                    setProducts([]);
+                }
+            })
+            .catch((error) => {
+                setProducts([]);
+            });
+    }, [props.search]);
 
     return (
         <View style={styles.container}>

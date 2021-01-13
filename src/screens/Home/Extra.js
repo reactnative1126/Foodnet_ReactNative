@@ -14,7 +14,7 @@ import i18n from '@utils/i18n';
 import { TextField } from 'react-native-material-textfield';
 
 const Required = ({ required, index, onSelect }) => {
-    const [check, setCheck] = useState(false);
+    const [check, setCheck] = useState(true);
     const [count, setCount] = useState(required.extra_minQuantity);
     return (
         <Fragment>
@@ -38,7 +38,7 @@ const Required = ({ required, index, onSelect }) => {
                 <View style={styles.check} />
                 <View style={styles.item}>
                     <View style={styles.productCart}>
-                        <Text style={styles.price}>{required.extra_price.toFixed(2) * count} {i18n.translate('lei')}</Text>
+                        <Text style={styles.price}>{(required.extra_price * count).toFixed(2)} {i18n.translate('lei')}</Text>
                         <View style={styles.cart}>
                             <TouchableOpacity style={styles.countButton1} disabled={!check} onPress={() => {
                                 count > required.extra_minQuantity && setCount(count - 1);
@@ -66,6 +66,7 @@ const Required = ({ required, index, onSelect }) => {
 const Optional = ({ optional, index, onSelect }) => {
     const [check, setCheck] = useState(false);
     const [count, setCount] = useState(optional.extra_minQuantity);
+
     return (
         <Fragment>
             <TouchableOpacity key={index} style={styles.items} onPress={() => {
@@ -88,7 +89,7 @@ const Optional = ({ optional, index, onSelect }) => {
                 <View style={styles.check} />
                 <View style={styles.item}>
                     <View style={styles.productCart}>
-                        <Text style={styles.price}>{optional.extra_price.toFixed(2) * count} {i18n.translate('lei')}</Text>
+                        <Text style={styles.price}>{(optional.extra_price * count).toFixed(2)} {i18n.translate('lei')}</Text>
                         <View style={styles.cart}>
                             <TouchableOpacity style={styles.countButton1} disabled={!check} onPress={() => {
                                 count > optional.extra_minQuantity && setCount(count - 1);
@@ -137,6 +138,21 @@ export default Extra = (props) => {
                     if (response.status == 200) {
                         setMinRequired(response.minRequired);
                         setRequireds(response.result);
+                        if (!isEmpty(response.result)) {
+                            var tempList = [];
+                            response.result.map((requiredOne, index) => {
+                                tempList.push({
+                                    extra_id: requiredOne.extra_id,
+                                    extra_name: requiredOne.extra_name,
+                                    extra_minQuantity: requiredOne.extra_minQuantity,
+                                    extra_price: requiredOne.extra_price,
+                                    extra_maxQuantity: requiredOne.extra_maxQuantity,
+                                    allergens_name: requiredOne.allergens_name,
+                                    extra_dash: requiredOne.extra_minQuantity
+                                });
+                            })
+                            setRequiredList(tempList);
+                        }
                     }
                 })
                 .catch((error) => {

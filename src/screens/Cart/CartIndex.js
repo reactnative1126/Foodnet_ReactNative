@@ -33,7 +33,7 @@ const CartItem = ({ cartRestaurant, cartProduct, index, onSelect, onDelete }) =>
             ) : null}
             <View style={styles.cartBottom}>
                 <View style={styles.cartLeft}>
-                    <Text style={styles.price}>{cartProduct.productPrice} {i18n.translate('lei')}</Text>
+                    <Text style={styles.price}>{cartProduct.productPrice.toFixed(2)} {i18n.translate('lei')}</Text>
                     {!isEmpty(cartProduct.boxPrice) && (
                         <Text style={styles.boxPrice}>{i18n.translate('Box price')}: {cartProduct.boxPrice.toFixed(2)}{i18n.translate('lei')}</Text>
                     )}
@@ -58,7 +58,7 @@ const CartItem = ({ cartRestaurant, cartProduct, index, onSelect, onDelete }) =>
     )
 }
 
-export default Cart = (props) => {
+export default CartIndex = (props) => {
     const dispatch = useDispatch();
     const { logged, country, city, user } = useSelector(state => state.auth);
     const { cartRestaurant, cartProducts, cartBadge } = useSelector(state => state.food);
@@ -176,15 +176,15 @@ export default Cart = (props) => {
                         </View>
                         <View style={{ marginTop: 20, marginBottom: 50, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
                             <TouchableOpacity
-                                style={[styles.button, (disabled || (cartRestaurant.minimumOrderUser >= total.toFixed(2))) ? common.backColorGrey : common.backColorYellow]}
-                                disabled={disabled || (cartRestaurant.minimumOrderUser >= total.toFixed(2))}
+                                style={[styles.button, (disabled || (cartRestaurant.minimumOrderUser > total.toFixed(2))) ? common.backColorGrey : common.backColorYellow]}
+                                disabled={disabled || (cartRestaurant.minimumOrderUser > total.toFixed(2))}
                                 onPress={() => {
                                     setDisabled(true);
                                     props.navigation.push('CartDetail');
                                     setTimeout(() => setDisabled(false), 1000);
                                 }}>
-                                {(cartRestaurant.minimumOrderUser >= total.toFixed(2)) ? (
-                                    <Text style={styles.buttonText}>{i18n.translate('More')} {cartRestaurant.minimumOrderUser - total.toFixed(2)} {i18n.translate('lei')}</Text>
+                                {(cartRestaurant.minimumOrderUser > total.toFixed(2)) ? (
+                                    <Text style={styles.buttonText}>{i18n.translate('More')} {(cartRestaurant.minimumOrderUser - total).toFixed(2)} {i18n.translate('lei')}</Text>
                                 ) : (
                                         <Text style={styles.buttonText}>{i18n.translate('Send order')}</Text>
                                     )}

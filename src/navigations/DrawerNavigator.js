@@ -7,6 +7,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeStack from '@navigations/StackNavigators/HomeStackNavigator';
 import ProfileStack from '@navigations/StackNavigators/ProfileStackNavigator';
 import DeliveryStack from '@navigations/StackNavigators/DeliveryStackNavigator';
+import CartStack from '@navigations/StackNavigators/CartStackNavigator';
 import OrderStack from '@navigations/StackNavigators/OrderStackNavigator';
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -28,6 +29,11 @@ export default DrawerNavigator = () => {
                 swipeEnabled: false
             }} />
             <Drawer.Screen name="Delivery" component={DeliveryStack} options={{
+                headerShown: false,
+                animationEnabled: false,
+                swipeEnabled: false
+            }} />
+            <Drawer.Screen name="Cart" component={CartStack} options={{
                 headerShown: false,
                 animationEnabled: false,
                 swipeEnabled: false
@@ -73,7 +79,7 @@ const DrawerContent = (props) => {
                 </View>
                 <View style={common.headerRight}>
                     <TouchableOpacity onPress={() => {
-                        props.navigation.navigate('Order');
+                        props.navigation.navigate('Cart');
                     }}>
                         {cartBadge > 0 ? (
                             <Fragment>
@@ -84,8 +90,9 @@ const DrawerContent = (props) => {
                             </Fragment>
                         ) : (
                                 <Fragment>
-                                    <CartYellowIcon />
-                                    <View style={styles.badgeEmpty} />
+                                    {/* <CartYellowIcon />
+                                    <View style={styles.badgeEmpty} /> */}
+                                    <View />
                                 </Fragment>
                             )}
                     </TouchableOpacity>
@@ -94,7 +101,9 @@ const DrawerContent = (props) => {
             <Content style={styles.content}>
                 {logged && (
                     <Fragment>
-                        <TouchableOpacity style={styles.menuItem} onPress={() => props.navigation.navigate('Home')}>
+                        <TouchableOpacity style={styles.menuItem} onPress={() => {
+                            props.navigation.navigate('Order', { screen: 'OrderIndex', params: { orderId: null } });
+                        }}>
                             <OrderIcon />
                             <Text style={styles.menuTitle}>{i18n.translate('My orders')}</Text>
                         </TouchableOpacity>
@@ -115,7 +124,7 @@ const DrawerContent = (props) => {
                     <LanguageIcon />
                     <Text style={styles.menuTitle}>{i18n.translate('Language selector')}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.menuItem}>
+                <TouchableOpacity style={styles.menuItem} onPress={() => props.navigation.navigate('Home')}>
                     <ServiceIcon />
                     <Text style={styles.menuTitle}>{i18n.translate('Customer service')}</Text>
                 </TouchableOpacity>

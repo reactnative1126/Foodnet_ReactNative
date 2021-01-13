@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, Fragment } from 'react';
+import { CommonActions } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Header, Content } from 'native-base';
-import { Platform, StatusBar, StyleSheet, SafeAreaView, ScrollView, FlatList, View, Text, Animated, Image, TouchableOpacity, LogBox } from 'react-native';
+import { Platform, StatusBar, BackHandler, StyleSheet, SafeAreaView, ScrollView, FlatList, View, Text, Animated, Image, TouchableOpacity, LogBox } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Icon } from 'react-native-elements';
 import { setLoading } from '@modules/reducers/auth/actions';
@@ -88,6 +89,9 @@ export default CartDetail = (props) => {
     const [take, setTake] = useState(false);
     const [cutlery, setCutlery] = useState(false);
     const [comment, setComment] = useState('');
+    const [visitCommentText, setVisitCommentText] = useState(false);
+    const [errorCommentText, setErrorCommentText] = useState('');
+
     const [payment, setPayment] = useState(1);
 
     const [addressId] = useState(0);
@@ -105,6 +109,8 @@ export default CartDetail = (props) => {
     const [citys, setCitys] = useState([]);
     const [cityObj, setCityObj] = useState({ id: user.city.id, cities: user.city.name });
     const [disabled, setDisabled] = useState(false);
+    const [navi, setNavi] = useState(true);
+    const [orderId, setOrderId] = useState(0);
 
     const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -133,6 +139,10 @@ export default CartDetail = (props) => {
         outputRange: [HEADER_SCROLL_DISTANCE / 2 - 30, 5],
         extrapolate: 'clamp',
     });
+
+    useEffect(() => {
+        (visitCommentText && !validateBetween(comment, 0, 200)) ? setErrorCommentText('The text must be less more than 200 characters') : setErrorCommentText('');
+    }, [comment, visitCommentText]);
 
     useEffect(() => {
         LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
@@ -166,6 +176,7 @@ export default CartDetail = (props) => {
                     dispatch(setLoading(false));
                     if (response.status == 200) {
                         setCitys(response.locations);
+                        if (cityObj.id == 0) setCityObj(response.locations[0]);
                     }
                 })
                 .catch((error) => {
@@ -183,14 +194,26 @@ export default CartDetail = (props) => {
     }, [addressStreet, visitStreet, addressHouseNumber, visitHouseNumber]);
 
     useEffect(() => {
+        if (success) {
+            const handleBackButton = () => { return true; }
+            BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+        }
+    }, [success]);
+
+    useEffect(() => {
         var totalAmount = 0;
         cartProducts.map((cartProduct, key) => {
             totalAmount += cartProduct.quantity * cartProduct.productPrice;
+            if (cartProduct.boxPrice) totalAmount += cartProduct.quantity * cartProduct.boxPrice;
             cartProduct.extras.map((extra, key) => {
                 totalAmount += extra.quantity * extra.extraPrice;
             });
         });
         setTotal(totalAmount);
+        if (totalAmount <= cartRestaurant.minimumOrderUser && navi) {
+            setNavi(false);
+            props.navigation.pop();
+        }
     });
 
     const onDelete = (check, item, count) => {
@@ -223,12 +246,13 @@ export default CartDetail = (props) => {
             dispatch(setCartProducts(result));
             dispatch(setCartBadge(totalBadge));
             // dispatch(setCartBadge(cartBadge - 1));
-            if (totalBadge <= 0) props.navigation.pop();
+            // if (totalBadge <= 0) props.navigation.pop();
         }
         setVisible(false);
     }
 
     const onOrder = () => {
+        dispatch(setLoading(true));
         setDisabled(true);
         setTimeout(() => setDisabled(false), 1000);
         if (!logged || isEmpty(deliveryList)) {
@@ -240,7 +264,9 @@ export default CartDetail = (props) => {
                     .then((response) => {
                         dispatch(setLoading(false));
                         if (response.status == 200) {
+                            setNavi(false);
                             setSuccess(true);
+                            setOrderId(response.finalOrderId);
                             // dispatch(setCartRestaurant(null));
                             dispatch(setCartBadge(0));
                             dispatch(setCartProducts([]));
@@ -251,11 +277,13 @@ export default CartDetail = (props) => {
                     });
             }
         } else {
-            FoodService.order(user.token, deliveryAddress.value, cartRestaurant.restaurant_id, take, cutlery, cartProducts, comment)
+            FoodService.order(user.token, user.city, deliveryAddress.value, cartRestaurant.restaurant_id, take, cutlery, cartProducts, comment)
                 .then((response) => {
                     dispatch(setLoading(false));
                     if (response.status == 200) {
+                        setNavi(false);
                         setSuccess(true);
+                        setOrderId(response.finalOrderId);
                         // dispatch(setCartRestaurant(null));
                         dispatch(setCartBadge(0));
                         dispatch(setCartProducts([]));
@@ -264,6 +292,36 @@ export default CartDetail = (props) => {
                 .catch((error) => {
                     dispatch(setLoading(false));
                 });
+        }
+    }
+
+    const goOrder = () => {
+        dispatch(setLoading(true));
+        if (logged) {
+            FoodService.getOrder(user.token, country, orderId)
+                .then((response) => {
+                    dispatch(setLoading(false));
+                    if (response.status == 200) {
+                        props.navigation.dispatch(
+                            CommonActions.reset({
+                                index: 0,
+                                routes: [{ name: 'Home' }]
+                            })
+                        );
+                        props.navigation.navigate('Order', { screen: 'OrderIndex', params: { order: response } });
+                    }
+                })
+                .catch((error) => {
+                    dispatch(setLoading(false));
+                    console.log(error.message);
+                });
+        } else {
+            props.navigation.dispatch(
+                CommonActions.reset({
+                    index: 0,
+                    routes: [{ name: 'Home' }]
+                })
+            );
         }
     }
 
@@ -290,7 +348,7 @@ export default CartDetail = (props) => {
                         <View style={styles.amount}>
                             <Text style={styles.price}>{i18n.translate('Total')}: {total.toFixed(2)} {i18n.translate('lei')}</Text>
                         </View>
-                        <Text style={[styles.cartText, { marginTop: 20 }]} numberOfLines={1}>{i18n.translate('Take over')}</Text>
+                        <Text style={[styles.cartText, { marginTop: 20 }]}>{i18n.translate('Take over')}</Text>
                         {logged && !isEmpty(deliveryList) ? (
                             <View style={{ width: '100%' }}>
                                 {deliveryList.map((delivery, key) => (
@@ -301,7 +359,7 @@ export default CartDetail = (props) => {
                                         })
                                     }}>
                                         <Icon type='material' name={delivery.id == deliveryAddress.value ? 'radio-button-on' : 'radio-button-off'} color={delivery.id == deliveryAddress.value ? colors.YELLOW.PRIMARY : colors.BLACK} size={20} />
-                                        <Text style={styles.radioText} numberOfLines={1}>{delivery.city + ', ' + delivery.street + ', ' + delivery.houseNumber + ', ' + delivery.floor + ', ' + delivery.doorNumber}</Text>
+                                        <Text style={styles.radioText}>{delivery.city + ', ' + delivery.street + ', ' + delivery.houseNumber + ', ' + delivery.floor + ', ' + delivery.doorNumber}</Text>
                                     </TouchableOpacity>
                                 ))}
                             </View>
@@ -434,10 +492,14 @@ export default CartDetail = (props) => {
                                 value={comment}
                                 multiline={true}
                                 height={85}
-                                containerStyle={[styles.textContainer, common.borderColorGrey]}
+                                containerStyle={[styles.textContainer, !isEmpty(errorCommentText) ? common.borderColorRed : common.borderColorGrey]}
                                 inputContainerStyle={styles.inputContainer}
-                                onChangeText={(value) => setComment(value)}
+                                onChangeText={(value) => {
+                                    setComment(value);
+                                    setVisitCommentText(true);
+                                }}
                             />
+                            <Text style={common.errorText}>{errorCommentText}</Text>
                         </Card>
                         <Text style={[styles.cartText, { marginTop: 20 }]} numberOfLines={1}>{i18n.translate('Payment method')}</Text>
                         <TouchableOpacity style={styles.radioButton} disabled={true}>
@@ -451,9 +513,9 @@ export default CartDetail = (props) => {
 
                         <View style={{ marginTop: 30, marginBottom: 50, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
                             <TouchableOpacity style={[styles.button,
-                            ((!logged || isEmpty(deliveryList)) && (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) ? common.backColorGrey : common.backColorYellow
+                            ((!logged || isEmpty(deliveryList)) && (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) || !validateBetween(comment, 0, 300) ? common.backColorGrey : common.backColorYellow
                             ]}
-                                disabled={disabled || (!logged && (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber))}
+                                disabled={disabled || (!logged && (cityObj.id == 0 || isEmpty(addressStreet) || isEmpty(addressHouseNumber) || errorStreet || errorHouseNumber)) || !validateBetween(comment, 0, 300)}
                                 onPress={() => onOrder()}>
                                 <Text style={styles.buttonText}>{i18n.translate('Order Now')}</Text>
                             </TouchableOpacity>
@@ -466,7 +528,7 @@ export default CartDetail = (props) => {
                             <Text style={styles.iconText}>{i18n.translate('Congratulation')}</Text>
                             <Text style={styles.mainText}>{i18n.translate('Successful offer')}</Text>
                             <Text style={styles.mainDescription}>{i18n.translate('Your order will arrive soon We wish you a good appetite in advance')}</Text>
-                            <TouchableOpacity style={styles.successButton} onPress={() => props.navigation.pop()}>
+                            <TouchableOpacity style={styles.successButton} onPress={() => goOrder()}>
                                 <Text style={styles.successText}>{i18n.translate('Order status')}</Text>
                             </TouchableOpacity>
                             <View style={common.height50} />
@@ -492,9 +554,11 @@ export default CartDetail = (props) => {
             <Animated.View style={[styles.headerTop, { transform: [{ translateY: headerTopTranslateY }] }]}>
                 <Header style={styles.headerContent}>
                     <View style={common.headerLeft}>
-                        <TouchableOpacity onPress={() => props.navigation.pop()}>
-                            <BackWhiteIcon />
-                        </TouchableOpacity>
+                        {!success && (
+                            <TouchableOpacity onPress={() => props.navigation.pop()}>
+                                <BackWhiteIcon />
+                            </TouchableOpacity>
+                        )}
                     </View>
                     <Animated.View style={[{ transform: [{ translateY: titleTranslateY }] }]}>
                         <Text style={styles.headerTitle} numberOfLines={1}>{restaurant.restaurant_name}</Text>
@@ -889,7 +953,7 @@ const styles = StyleSheet.create({
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         marginTop: 10
     },
     radioText: {

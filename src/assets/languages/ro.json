@@ -227,5 +227,11 @@
     "lei": "lei",
     "Opening Hours": "Ore de deschidere",
     "Minimum":"Minim",
-    "More": "Mai Mult"
+    "More": "Mai Mult",
+    "Where": "Unde",
+    "Order Detail": "Detaliile comenzii",
+    "Order ID": "Comanda ID",
+    "Order placed": "Comandă plasată",
+    "Place and method of collection": "Locul și metoda de colectare",
+    "Food (s) ordered": "Alimente comandate"
 }

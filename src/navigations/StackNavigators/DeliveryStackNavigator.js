@@ -10,7 +10,7 @@ import { navOptionHandler } from '@utils/functions';
 const StackDelivery = createStackNavigator();
 export default DeliveryStack = () => {
   return (
-    <StackDelivery.Navigator initialRouteName='Delivery' screenOptions={{ ...TransitionPresets.SlideFromRightIOS }}>
+    <StackDelivery.Navigator initialRouteName='DeliveryList' screenOptions={{ ...TransitionPresets.SlideFromRightIOS }}>
       <StackDelivery.Screen name='DeliveryList' component={DeliveryList} options={navOptionHandler} />
       <StackDelivery.Screen name='DeliveryAdd' component={DeliveryAdd} options={navOptionHandler} />
       <StackDelivery.Screen name='Success' component={Success} options={navOptionHandler} />

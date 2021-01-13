@@ -227,5 +227,11 @@
     "lei": "lei",
     "Opening Hours": "Opening Hours",
     "Minimum":"Minimum",
-    "More": "More"
+    "More": "More",
+    "Where": "Where",
+    "Order Detail": "Order Detail",
+    "Order ID": "Order ID",
+    "Order placed": "Order placed",
+    "Place and method of collection": "Place and method of collection",
+    "Food (s) ordered": "Food (s) ordered"
 }

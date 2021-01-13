@@ -94,7 +94,7 @@ export default Home = (props) => {
                 </TouchableOpacity>
                 <View style={common.headerRight}>
                     <TouchableOpacity onPress={() => {
-                        props.navigation.navigate('Order');
+                        props.navigation.navigate('Cart');
                     }}>
                         {cartBadge > 0 ? (
                             <Fragment>
@@ -105,8 +105,9 @@ export default Home = (props) => {
                             </Fragment>
                         ) : (
                                 <Fragment>
-                                    <CartYellowIcon />
-                                    <View style={styles.badgeEmpty} />
+                                    {/* <CartYellowIcon />
+                                    <View style={styles.badgeEmpty} /> */}
+                                    <View />
                                 </Fragment>
                             )}
                     </TouchableOpacity>

@@ -139,7 +139,7 @@ export default Forgot = (props) => {
                             <CodeInput
                                 codeLength={6}
                                 size={50}
-                                secureTextEntry
+                                // secureTextEntry
                                 activeColor={colors.YELLOW.PRIMARY}
                                 inactiveColor={'#666'}
                                 // autoFocus={false}

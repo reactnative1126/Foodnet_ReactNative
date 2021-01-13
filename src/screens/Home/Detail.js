@@ -42,6 +42,7 @@ export default Detail = (props) => {
     });
     const [subCategories, setSubCategories] = useState([]);
     const [subCategory, setSubCategory] = useState({
+        ordered: 0,
         subcategoryId: 0,
         propertyValTransId: 0,
         subcategories_name: ''
@@ -108,7 +109,7 @@ export default Detail = (props) => {
         if (filters.card == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Card') }];
         if (filters.withinOneHour == 1) tempFilters = [...tempFilters, { filter: i18n.translate('Within 1 hour') }];
         setFilterList(tempFilters);
-        dispatch(setLoading(true));
+        // dispatch(setLoading(true));
         FoodService.categories(country, restaurant.restaurant_id)
             .then(async (response) => {
                 if (response.status == 200) {
@@ -119,7 +120,7 @@ export default Detail = (props) => {
                 }
             })
             .catch((error) => {
-                dispatch(setLoading(false));
+                // dispatch(setLoading(false));
             });
         FoodService.information(country, restaurant.restaurant_name)
             .then((response) => {
@@ -130,14 +131,14 @@ export default Detail = (props) => {
     }, [restaurant]);
 
     useEffect(() => {
-        dispatch(setLoading(true));
+        // dispatch(setLoading(true));
         FoodService.subCategories(country, restaurant.restaurant_id, category.category_id)
             .then(async (response) => {
-                dispatch(setLoading(false));
+                // dispatch(setLoading(false));
                 if (response.status == 200) {
                     setSubCategories(response.result);
                     if (!isEmpty(response.result)) {
-                        if ((country === 'en' && category.category_name === 'Daily Menu') || (country === 'ro' && category.category_name === 'Meniul Zilei') || (country === 'hu' && category.category_name === 'Napi Menü')) {
+                        if (category.category_name === 'Daily Menu' || category.category_name === 'Daily menu' || category.category_name === 'Meniul Zilei' || category.category_name === 'Meniul zilei' || category.category_name === 'Napi Menü' || category.category_name === 'Napi menü') {
                             var d = new Date();
                             var n = d.getDay();
                             setSubCategory(response.result[n === 0 ? 6 : n - 1]);
@@ -148,22 +149,22 @@ export default Detail = (props) => {
                 }
             })
             .catch((error) => {
-                dispatch(setLoading(false));
+                // dispatch(setLoading(false));
             });
     }, [category]);
 
     useEffect(() => {
-        dispatch(setLoading(true));
+        // dispatch(setLoading(true));
         FoodService.reviews(restaurant.restaurant_name, rating)
             .then(async (response) => {
-                dispatch(setLoading(false));
+                // dispatch(setLoading(false));
                 if (response.status == 200 && !isEmpty(response.result)) {
                     setReviews(response.result[0].ratings);
                     setAverage(response.result[0].AVGrating);
                 }
             })
             .catch((error) => {
-                dispatch(setLoading(false));
+                // dispatch(setLoading(false));
             });
     }, [rating]);
 
@@ -182,7 +183,7 @@ export default Detail = (props) => {
                 onScrollBeginDrag={() => setVisible(false)}
                 onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: true })}>
                 <TabView navigationState={{ index, routes }}
-                    // swipeEnabled={Platform.OS === 'ios' ? true : false}
+                    swipeEnabled={Platform.OS === 'ios' ? true : false}
                     renderTabBar={(props) => (
                         <TabBar {...props}
                             scrollEnabled={true}
@@ -206,9 +207,10 @@ export default Detail = (props) => {
                                     search={search}
                                     onCategory={(value) => setCategory(value)}
                                     onSubCategory={(value) => setSubCategory(value)}
+                                    // onSubCategory={(value) => console.log(value)}
                                     onSearch={(value) => setSearch(value)}
                                     onExtra={(product, count) => props.navigation.push('Extra', { restaurant, product, count })}
-                                    onCart={() => props.navigation.navigate('Order')}
+                                    onCart={() => props.navigation.navigate('Cart')}
                                     onModal={() => setModal(true)}
                                 />;
                             case 'info':
@@ -268,7 +270,7 @@ export default Detail = (props) => {
                     </Animated.View>
                     <View style={common.headerRight}>
                         <TouchableOpacity onPress={() => {
-                            props.navigation.navigate('Order');
+                            props.navigation.navigate('Cart');
                         }}>
                             {cartBadge > 0 ? (
                                 <Fragment>
@@ -279,8 +281,9 @@ export default Detail = (props) => {
                                 </Fragment>
                             ) : (
                                     <Fragment>
-                                        <CartWhiteIcon />
-                                        <View style={styles.badgeEmpty} />
+                                        {/* <CartWhiteIcon />
+                                        <View style={styles.badgeEmpty} /> */}
+                                        <View />
                                     </Fragment>
                                 )}
                         </TouchableOpacity>

@@ -53,7 +53,7 @@ export default DeliveryList = (props) => {
     const renderItem = (address, index) => {
         return (
             <View key={index} style={styles.address}>
-                <Text style={styles.addressText} numberOfLines={2}>{address.item.doorNumber}, {address.item.floor}, {address.item.houseNumber}, {address.item.street}, {address.item.city}</Text>
+                <Text style={styles.addressText} >{address.item.doorNumber}, {address.item.floor}, {address.item.houseNumber}, {address.item.street}, {address.item.city}</Text>
                 <View style={styles.addressOption}>
                     <TouchableOpacity onPress={() => props.navigation.push('DeliveryAdd', { type: 2, item: address.item })}>
                         <Text style={styles.addressEdit}>{i18n.translate('Edit')}</Text>

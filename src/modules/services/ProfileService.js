@@ -9,16 +9,6 @@ const ProfileService = {
         });
     },
     setDeliveryAddress: function (token, id, city, street, houseNumber, floor, doorNumber) {
-        console.log(JSON.stringify({
-            houseNumber,
-            street,
-            city: city.cities,
-            floor,
-            doorNumber,
-            deliveryAddressId: id,
-            locationNameId: city.id,
-            operation: id === 0 ? 'create' : 'update'
-        }))
         setClientToken(token);
         return axios.post(`/delivery-address`, {
             houseNumber,

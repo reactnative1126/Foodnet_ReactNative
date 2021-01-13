@@ -75,12 +75,12 @@ export default DeliveryAdd = (props) => {
                 if (response.status == 201 || response.status == 200) {
                     props.navigation.push('Success', { type });
                 } else {
-                    props.navigation.push('Error');
+                    props.navigation.push('Errors');
                 }
             })
             .catch((error) => {
                 dispatch(setLoading(false));
-                props.navigation.push('Error');
+                props.navigation.push('Errors');
             });
     };
 

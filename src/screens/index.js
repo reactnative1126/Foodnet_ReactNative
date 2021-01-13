@@ -26,8 +26,12 @@ import ReviewAdd from '@screens/Review/ReviewAdd';
 import ReviewDelete from '@screens/Review/ReviewDelete';
 import CouponCodes from '@screens/Profile/CouponCodes';
 
-import Cart from '@screens/Order/Cart';
-import CartDetail from '@screens/Order/CartDetail';
+import CartIndex from '@screens/Cart/CartIndex';
+import CartDetail from '@screens/Cart/CartDetail';
+
+import OrderIndex from '@screens/Order/OrderIndex';
+import OrderDetail from '@screens/Order/OrderDetail';
+import OrderSuccess from '@screens/Order/OrderSuccess';
 
 export {
     Internet,
@@ -57,6 +61,9 @@ export {
     ReviewDelete,
     CouponCodes,
 
-    Cart,
-    CartDetail
+    CartIndex,
+    CartDetail,
+    OrderIndex,
+    OrderDetail,
+    OrderSuccess
 }

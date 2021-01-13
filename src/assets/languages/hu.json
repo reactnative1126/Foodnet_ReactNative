@@ -227,5 +227,11 @@
     "lei": "lej",
     "Opening Hours": "Nyitvatartás",
     "Minimum":"Minimális",
-    "More": "Több"
+    "More": "Több",
+    "Where": "Honnan",
+    "Order Detail": "Rendelés részletei",
+    "Order ID": "Megrendelés azonosítója",
+    "Order placed": "Rendelés leadva",
+    "Place and method of collection": "Ávétel helye és módja",
+    "Food (s) ordered": "Megrendelt étel(ek)"
 }
